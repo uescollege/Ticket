@@ -1,0 +1,296 @@
+mixin datatable(id, url, columns, massive_delete_action = '#', rowId = "_id", options = {})   
+  .card
+    //- begin::Card header
+    .card-header.border-0.pt-6
+      //- begin::Card title
+      .card-title
+        //- begin::Search
+        .d-flex.align-items-center.position-relative.my-1
+          //- begin::Svg Icon | path: icons/duotune/general/gen021.svg
+          span.svg-icon.svg-icon-1.position-absolute.ms-6
+            svg(width='24' height='24' viewbox='0 0 24 24' fill='none' xmlns='http://-www.w3.org/2000/svg')
+              rect(opacity='0.5' x='17.0365' y='15.1223' width='8.15546' height='2' rx='1' transform='rotate(45 17.0365 15.1223)' fill='currentColor')
+              path(d='M11 19C6.55556 19 3 15.4444 3 11C3 6.55556 6.55556 3 11 3C15.4444 3 19 6.55556 19 11C19 15.4444 15.4444 19 11 19ZM11 5C7.53333 5 5 7.53333 5 11C5 14.4667 7.53333 17 11 17C14.4667 17 17 14.4667 17 11C17 7.53333 14.4667 5 11 5Z' fill='currentColor')
+          //- end::Svg Icon
+          input.form-control.form-control-solid.w-250px.ps-14(type='text' data-kt-subscription-table-filter='search' placeholder=i18n.APP.SEARCH)
+      //- begin::Card title
+      //- begin::Card toolbar
+      .card-toolbar
+        //- begin::Toolbar
+        .d-flex.justify-content-end(data-kt-subscription-table-toolbar='base')
+     
+        block actions_toolbar     
+               
+        //- begin::Group actions
+        .d-flex.justify-content-end.align-items-center.d-none(data-kt-subscription-table-toolbar='selected')
+          .fw-bold.me-5
+            span.me-2(data-kt-subscription-table-select='selected_count')
+            | #{i18n.APP.SELECTED}
+          button.btn.btn-danger(type='button' data-kt-subscription-table-select='delete_selected') #{i18n.APP.DELETE_SELECTED}
+    //- begin::Card body
+    .card-body.pt-0
+      //- begin::Table
+      table.table.align-middle.table-row-dashed.fs-6.gy-5(id=id)
+        //- begin::Table head
+        thead
+        tbody.text-gray-600.fw-semibold
+        tfoot 
+  
+  script.
+    const !{id} = function () {
+        // Define shared variables
+        var table;
+        var datatable;
+        var toolbarBase;
+        var toolbarSelected;
+        var selectedCount;
+        const massive_delete_action = '#{massive_delete_action}';
+
+        // Private functions
+        var initDatatable = function () {
+
+            // Init datatable --- more info on datatables: https://datatables.net/manual/
+            datatable = $(table).DataTable({
+              pageLength: 10,
+              language: {
+                buttons: {
+                  selectAll: '#{i18n.APP.SELECT_ALL}',
+                  selectNone: '#{i18n.APP.DELETE_SELECTED}',
+                },
+                url: "//cdn.datatables.net/plug-ins/1.10.16/i18n/Spanish.json",
+                select: {
+                  rows: "%d #{i18n.APP.ROWS_SELECTED}",
+                },
+              },
+              responsive: true,
+              searchDelay: 1000,
+              processing: true,
+              serverSide: true,
+              ajax: '#{url}',
+              rowId: '#{rowId}',
+              columns: !{columns},
+              initComplete: function (settings) {
+                //- clone thead to tfoot
+                $(`#datatable_#{id} thead tr`).clone().appendTo($(`#datatable_#{id} tfoot`));
+              }
+            });
+
+            // Re-init functions on every table re-draw -- more info: https://datatables.net/reference/event/draw
+            datatable.on('draw', function () {
+                initToggleToolbar();
+                toggleToolbars();
+            });
+        }
+
+        // Search Datatable --- official docs reference: https://datatables.net/reference/api/search()
+        var handleSearch = function () {
+            const filterSearch = document.querySelector('[data-kt-subscription-table-filter="search"]');
+            filterSearch.addEventListener('keyup', function (e) {
+                datatable.search(e.target.value).draw();
+            });
+        }
+
+        // Filter Datatable
+        var handleFilter = function () {
+            // Select filter options
+            const filterForm = document.querySelector('[data-kt-subscription-table-filter="form"]');
+            const filterButton = filterForm.querySelector('[data-kt-subscription-table-filter="filter"]');
+            const resetButton = filterForm.querySelector('[data-kt-subscription-table-filter="reset"]');
+            const selectOptions = filterForm.querySelectorAll('select');
+
+            // Filter datatable on submit
+            filterButton.addEventListener('click', function () {
+                var filterString = '';
+
+                // Get filter values
+                selectOptions.forEach((item, index) => {
+                    if (item.value && item.value !== '') {
+                        if (index !== 0) {
+                            filterString += ' ';
+                        }
+
+                        // Build filter value options
+                        filterString += item.value;
+                    }
+                });
+
+                // Filter datatable --- official docs reference: https://datatables.net/reference/api/search()
+                datatable.search(filterString).draw();
+            });
+
+            // Reset datatable
+            resetButton.addEventListener('click', function () {
+                // Reset filter form
+                selectOptions.forEach((item, index) => {
+                    // Reset Select2 dropdown --- official docs reference: https://select2.org/programmatic-control/add-select-clear-items
+                    $(item).val(null).trigger('change');
+                });
+
+                // Filter datatable --- official docs reference: https://datatables.net/reference/api/search()
+                datatable.search('').draw();
+            });
+        }
+
+        // Init toggle toolbar
+        var initToggleToolbar = () => {
+            // Toggle selected action toolbar
+            // Select all checkboxes
+            const checkboxes = table.querySelectorAll('[type="checkbox"]');
+
+            // Select elements
+            toolbarBase = document.querySelector('[data-kt-subscription-table-toolbar="base"]');
+            toolbarSelected = document.querySelector('[data-kt-subscription-table-toolbar="selected"]');
+            selectedCount = document.querySelector('[data-kt-subscription-table-select="selected_count"]');
+            const deleteSelected = document.querySelector('[data-kt-subscription-table-select="delete_selected"]');
+
+            // Toggle delete selected toolbar
+            checkboxes.forEach(c => {
+                // Checkbox on click event
+                c.addEventListener('click', function () {
+                    setTimeout(function () {
+                        toggleToolbars();
+                    }, 50);
+                });
+            });
+
+            // Deleted selected rows
+            deleteSelected.addEventListener('click', function () {
+                // SweetAlert2 pop up --- official docs reference: https://sweetalert2.github.io/
+                Swal.fire({
+                    text: "#{i18n.APP.ARE_YOU_SURE}",
+                    icon: "warning",
+                    showCancelButton: true,
+                    buttonsStyling: false,
+                    confirmButtonText: "#{i18n.APP.YES_DELETE_IT}",
+                    cancelButtonText: "#{i18n.APP.NO_CANCEL}",
+                    customClass: {
+                        confirmButton: "btn fw-bold btn-danger",
+                        cancelButton: "btn fw-bold btn-active-light-primary"
+                    }
+                }).then(function (result) {
+                    if (result.value) {
+                        if (massive_delete_action != '#') {
+                            $.ajax({
+                                url: massive_delete_action,
+                                method: 'delete',
+                                data: {
+                                    ids: Array.from(checkboxes).filter(c => c.checked).map(c => c.value)
+                                },
+                                success: function (data, status) {
+                                    if (status == 'success') {
+                                        Swal.fire({
+                                            text: data.msg,
+                                            icon: "success",
+                                            buttonsStyling: false,
+                                            confirmButtonText: "#{i18n.APP.GOT_IT}",
+                                            customClass: {
+                                                confirmButton: "btn fw-bold btn-primary",
+                                            }
+                                        }).then(function (result) {
+                                            if (result.value) {
+                                                //- checkboxes.forEach(c => {
+                                                //-     if (c.checked) {
+                                                //-         datatable.row($(c.closest('tbody tr'))).remove().draw();
+                                                //-     }
+                                                //- });
+                                                //- // Remove header checked box
+                                                //- const headerCheckbox = table.querySelectorAll('[type="checkbox"]')[0];
+                                                //- headerCheckbox.checked = false;
+                                                $("##{id}").DataTable().ajax.reload();
+                                            }
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            text: data.msg,
+                                            icon: "error",
+                                            buttonsStyling: false,
+                                            confirmButtonText: "#{i18n.APP.GOT_IT}",
+                                            customClass: {
+                                                confirmButton: "btn fw-bold btn-primary",
+                                            }
+                                        });
+                                    }
+                                },
+                                error: function (error) {
+                                    Swal.fire({
+                                        text: error.responseJSON.message,
+                                        icon: "error",
+                                        buttonsStyling: false,
+                                        confirmButtonText: "#{i18n.APP.GOT_IT}",
+                                        customClass: {
+                                            confirmButton: "btn fw-bold btn-primary",
+                                        }
+                                    })
+                                },
+                                complete: function (data) {
+                                    toggleToolbars(); // Detect checked checkboxes
+                                    initToggleToolbar(); // Re-init toolbar to recalculate checkboxes
+                                }
+                            })
+                        }
+                       
+                    } else if (result.dismiss === 'cancel') {
+                        Swal.fire({
+                            text: "#{i18n.APP.ITEMS_WAS_NOT_DELETE}", //Selected customers was not deleted.
+                            icon: "error",
+                            buttonsStyling: false,
+                            confirmButtonText: "#{i18n.APP.GOT_IT}",
+                            customClass: {
+                                confirmButton: "btn fw-bold btn-primary",
+                            }
+                        });
+                    }
+                });
+            });
+        }
+
+        // Toggle toolbars
+        const toggleToolbars = () => {
+            // Select refreshed checkbox DOM elements 
+            const allCheckboxes = table.querySelectorAll('tbody [type="checkbox"]');
+
+            // Detect checkboxes state & count
+            let checkedState = false;
+            let count = 0;
+
+            // Count checked boxes
+            allCheckboxes.forEach(c => {
+                if (c.checked) {
+                    checkedState = true;
+                    count++;
+                }
+            });
+
+            // Toggle toolbars
+            if (checkedState) {
+                selectedCount.innerHTML = count;
+                toolbarBase.classList.add('d-none');
+                toolbarSelected.classList.remove('d-none');
+            } else {
+                toolbarBase.classList.remove('d-none');
+                toolbarSelected.classList.add('d-none');
+            }
+        }
+
+        return {
+            // Public functions  
+            init: function () {
+                table = document.getElementById('#{id}');
+
+                if (!table) {
+                    return;
+                }
+
+                initDatatable();
+                //- initToggleToolbar();
+                handleSearch();
+                //- handleFilter();
+            }
+        }
+    }();
+    addEventListener("DOMContentLoaded", function () {
+      KTUtil.onDOMContentLoaded(function () {
+          !{id}.init();
+      });
+    });
+

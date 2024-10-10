@@ -1,0 +1,9 @@
+extends ./partials/_master.pug
+
+block main
+  //- mixins
+  include ../mixins/base/image.pug
+
+  include ./partials/web/_navbar.pug
+  block content
+  include ./partials/web/_footer.pug

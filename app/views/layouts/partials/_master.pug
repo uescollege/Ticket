@@ -1,0 +1,138 @@
+include ../../mixins/add_plugin.pug
+include ../../mixins/add_vendor.pug
+block vendors
+  +addVendors(['client'])
+doctype html
+html(lang=`${lang || 'en'}`)
+  head
+
+    title #{meta_title || 'Proyecto IGF115'}
+    link(rel='shortcut icon' href='/public/theme/media/logos/favicon.ico')
+
+    //- Meta
+    meta(charset='utf-8')
+    meta(name='viewport' content='width=device-width, initial-scale=1')
+
+    meta(name='description' content=`${meta_description || 'Descripción Proyecto IGF115.'}`)
+    meta(name='keywords' content=`${meta_keywords || 'Proyecto, UES, IGF115'}`)
+    meta(name="author" content="Proyecto IGF115")
+    meta(name="copyright" content="Proyecto IGF115")
+    meta(name="theme-color" content="#ffffff")
+    meta(name="robots" content="index, follow")
+    link(rel='canonical' href=`${meta_url || ''}`)
+
+    //- Open Graph Meta
+    meta(property='og:locale' content='en_US')
+    meta(property='og:type' content=`${meta_type || 'website'}`)
+    meta(property='og:title' content=`${meta_title || ''}`)
+    meta(property='og:url' content=`${meta_url || ''}`)
+    meta(property='og:image' content=`${meta_image || ''}`)
+    meta(property='og:site_name' content=`${web_name || ''}`)
+
+    link(href='/public/bootstrap/css/bootstrap.min.css' rel='stylesheet')
+    link(href='/public/css/styles.min.css' rel='stylesheet')
+    link(href='/public/fonts/fontawesome-all.min.css' rel='stylesheet')
+
+    block renderVendor
+
+    if Array.isArray(vendors.css) && vendors.css.length > 0
+      each css in vendors.css
+        link(rel="preload" href=`${css}` as="style" onload="this.onload=null;this.rel='stylesheet'")
+        noscript
+          link(href=`${css}` rel='stylesheet' type='text/css' media="all")
+        //- link(href=`${css}` rel='stylesheet' type='text/css')
+
+
+    //- pwa
+    link(rel="manifest" href="/public/manifest.json")
+    //- link(rel="preload" href="/public/manifest.json" as="script" onload="this.onload=null;this.rel='script'")
+    //- noscript
+    //-   link(href='/public/manifest.json' rel='manifest' media="all")
+    block styles
+
+    //- Add to homescreen for Chrome on Android
+    meta(name="mobile-web-app-capable" content="yes")
+    meta(name="application-name" content="Proyecto IGF115")
+    link(rel='icon' sizes='512x512' href='/public/images/pwa/icon-384x384.webp')
+
+    //- meta(http-equiv="Content-Security-Policy" content="script-src 'none'")
+
+
+    //- Add to homescreen for Safari on iOS
+    meta(name="apple-mobile-web-app-status-bar" content="#ffffff")
+    meta(name='apple-mobile-web-app-capable' content='yes')
+    meta(name='apple-mobile-web-app-status-bar-style' content='black')
+    meta(name='apple-mobile-web-app-title' content='Proyecto IGF115')
+    //- link(rel='apple-touch-icon' href='/public/images/pwa/icon-384x384.webp')
+
+    //- link(href='/public/images/pwa/splash-640x1136.jpg' media='(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)' rel='apple-touch-startup-image')
+    //- link(href='/public/images/pwa/splash-750x1334.jpg' media='(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)' rel='apple-touch-startup-image')
+    //- link(href='/public/images/pwa/splash-1242x2208.jpg' media='(device-width: 621px) and (device-height: 1104px) and (-webkit-device-pixel-ratio: 3)' rel='apple-touch-startup-image')
+    //- link(href='/public/images/pwa/splash-1125x2436.jpg' media='(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)' rel='apple-touch-startup-image')
+    //- link(href='/public/images/pwa/splash-828x1792.jpg' media='(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)' rel='apple-touch-startup-image')
+    //- link(href='/public/images/pwa/splash-1242x2688.jpg' media='(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)' rel='apple-touch-startup-image')
+    //- link(href='/public/images/pwa/splash-1536x2048.jpg' media='(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2)' rel='apple-touch-startup-image')
+    //- link(href='/public/images/pwa/splash-1668x2224.jpg' media='(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2)' rel='apple-touch-startup-image')
+    //- link(href='/public/images/pwa/splash-2048x2732.jpg' media='(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2)' rel='apple-touch-startup-image')
+
+    // Tile for Win8
+    meta(name='msapplication-TileColor' content='#ffffff')
+    meta(name='msapplication-TileImage' content='/public/images/pwa/icon-384x384.webp')
+
+
+    script(src="/public/pwa/index.js" async defer) 
+
+    //- csrf
+    meta(name='csrf-token' content=`${csrfToken || ''}`)
+
+
+    script.
+      var lang = '#{lang || 'en'}';
+    style.
+      body {
+        font-family: sans-serif;
+        font-display: swap !important;
+      }
+  body(style="position:relative;height: 100vh;")
+    include ../../mixins/forms/input-label.pug
+    include ../../mixins/forms/input-information.pug
+    include ../../mixins/forms/textarea-label.pug
+    include ../../mixins/forms/checkbox.pug
+    include ../../mixins/forms/checkbox-inline.pug
+    include ../../mixins/forms/input.pug
+    include ../../mixins/forms/textarea.pug
+    include ../../mixins/forms/select2.pug
+
+    //- base mixins
+    include ../../mixins/base/breadcrumb.pug
+    include ../../mixins/base/button.pug
+    include ../../mixins/base/badge.pug
+    include ../../mixins/base/alert.pug
+    include ../../mixins/base/paginate.pug
+    include ../../mixins/base/hero-color.pug
+    include ../../mixins/base/icon.pug
+
+    //- app mixins
+    include ../../mixins/app/h1.pug
+
+    script.
+      var defaultThemeMode = "light"; var themeMode; if ( document.documentElement ) { if ( document.documentElement.hasAttribute("data-bs-theme-mode")) { themeMode = document.documentElement.getAttribute("data-bs-theme-mode"); } else { if ( localStorage.getItem("data-bs-theme") !== null ) { themeMode = localStorage.getItem("data-bs-theme"); } else { themeMode = defaultThemeMode; } } if (themeMode === "system") { themeMode = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"; } document.documentElement.setAttribute("data-bs-theme", themeMode); }
+
+    //- Content
+    block main
+
+    block drawers
+    block scrolltop
+    block modals
+
+
+    //- Javascripts
+    script(src='/public/bootstrap/js/bootstrap.min.js')
+    script(src='/public/js/script.min.js')
+    script(src='/public/js/chart.min.js')
+
+    if Array.isArray(vendors.js) && vendors.js.length > 0
+      each js in vendors.js
+        script(src=`${js}` defer)
+
+    block scripts

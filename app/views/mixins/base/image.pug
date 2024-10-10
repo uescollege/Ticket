@@ -1,0 +1,17 @@
+mixin image(args, args_default = { srcset: {} })
+  - args = Object.assign(args_default, args)
+  //- configure srcset and sizes, args = { srcset: { w320: image, ...}}
+  - let srcset = ''
+  - let sizes = ''
+  - const srcset_keys = Object.keys(args.srcset)
+  - for (let i = 0; i < srcset_keys.length; i++)
+    - let key = srcset_keys[i]
+    //- remove w from key
+    - const value = args.srcset[key]
+    - key = key.replace('w', '')
+    - srcset += `${value} ${key}w, `
+    - sizes += `(max-width: ${key}px) ${key}px, `
+  //- remove last comma
+  - srcset = srcset.slice(0, -2)
+  - sizes = sizes.slice(0, -2)
+  img(class="lozad" srcset=srcset sizes=sizes src=args.src loading="eager")&attributes(attributes)

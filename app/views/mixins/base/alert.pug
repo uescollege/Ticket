@@ -1,0 +1,13 @@
+mixin base-alert(title, type = 'primmary', isDismissible = false, isSolid = false)
+  .alert.d-flex.flex-column.flex-sm-row.p-5.mb-10(class=`bg-${type} ${isDismissible ? 'alert-dismissible': ''}`)
+    .d-flex.flex-column.text-light.pe-0.pe-sm-10
+      h4.mb-2.text-light #{title}
+      if block
+        block 
+      else
+        span
+          | #{i18n.APP.WITHOUT_CONTENT}
+    button.position-absolute.position-sm-relative.m-2.m-sm-0.top-0.end-0.btn.btn-icon.ms-sm-auto(type='button' data-bs-dismiss='alert')
+      i.ki-duotone.ki-cross.fs-1.text-light
+        span.path1
+        span.path2

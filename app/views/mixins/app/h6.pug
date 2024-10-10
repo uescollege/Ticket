@@ -1,0 +1,8 @@
+mixin app-h6(title)
+  h6.text-dark.fw-bold.mt-1.mb-1.fs-7
+    | #{title}
+    if block
+      small.text-muted.fs-6.fw-normal.ms-1
+        block 
+    else 
+      small.text-muted.fs-6.fw-normal.ms-1

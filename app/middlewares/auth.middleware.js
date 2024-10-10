@@ -1,0 +1,97 @@
+const jwt = require("jsonwebtoken");
+const CryptoJS = require("crypto-js");
+const config = require("#app/config/index");
+const existsModule = require("#app/helpers/exists-module.helper");
+const { exit } = require('process');
+
+if (!existsModule('admin')){
+  console.log('No existe el modulo admin o scort');
+  exit(1);
+}
+
+
+function isApiAuth(req, res, next) {
+  // bearer
+  if (!req.session.token) {
+    res.status(401);
+    return res.json({
+      ok: false,
+      message: "No autorizado"
+    });
+  }
+  next();
+}
+
+/**
+ *  Middleware para verificar si el usuario esta autenticado
+ * Es para las rutas de administrador
+ * Se utiliza passport
+ */
+async function isAdminAuth(req, res, next) {
+  try {
+    if (!req.user || !req.user.isAdmin) {
+      return res.redirect("/admin/signin");
+    }
+    
+    // variables para las vistas
+    req.session.admin = req.user;
+    res.locals.admin = req.user;
+    
+    return next();
+  } catch (error) {
+    return next(error);
+  }
+}
+
+/**
+ * si existe la sesion y es admin se redirecciona al panel
+ */
+function isAdminAuthRedirect(req, res, next) {
+  if (req.user && req.user.isAdmin) {
+    return res.redirect("/panel");
+  }
+  return next();
+}
+
+function isScortAuthRedirect(req, res, next) {
+  if (req.user && req.user.isScort) {
+    return res.redirect("/profile");
+  }
+  return next();
+
+}
+
+function findJWTToken(req, res, next) {
+    
+  //- si viene la autenticacion en el header se verifica
+  if (req.headers.authorization) {
+    const token = req.headers.authorization.split(" ")[1];
+    req.session.token = token;
+    const decoded = jwt.verify(token, config.SECRET);
+    req.session.user = decoded;
+    if (typeof decoded._target != 'undefined' && decoded._target != '') {
+      req.session.user._target_decoded = CryptoJS.AES.decrypt(
+        decoded._target,
+        config.SECRET
+      ).toString(CryptoJS.enc.Utf8);
+    }
+    if (decoded.iat > decoded.exp) {
+      delete req.session.user;
+      delete req.session.token;
+    } else {
+      res.locals.user = req.session.user;
+      res.locals.is_auth = true;
+    }
+  }
+
+  return next(); 
+}
+
+
+module.exports = {
+  isApiAuth,
+  findJWTToken,
+  isAdminAuth,
+  isAdminAuthRedirect,
+  isScortAuthRedirect
+}

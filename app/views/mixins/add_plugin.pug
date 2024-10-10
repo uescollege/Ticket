@@ -1,0 +1,7 @@
+mixin addStylePlugin(path)
+  - vendors.css = vendors.css || []
+  - vendors.css.push(path)
+  
+mixin addJavascriptPlugin(path)
+  - vendors.js = vendors.js || []
+  - vendors.js.push(path)

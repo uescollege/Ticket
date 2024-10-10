@@ -1,0 +1,8 @@
+mixin header-parallax(args = {}, defaultArgs = {title: 'Titulo', background: '/public/theme/media/misc/menu-header-bg.jpg'})
+  - args = Object.assign(defaultArgs, args)
+  h1.fs-2x.fw-bold.text-black.text-center #{args.title}
+  if block
+    block 
+  else 
+    p.text-gray-400.fs-4.fw-semibold.mb-10
+      | No hay contenido            

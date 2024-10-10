@@ -1,0 +1,20 @@
+extends ../layouts/web
+
+append main 
+  .d-flex.flex-column.flex-root
+    .d-flex.flex-column.flex-column-fluid.bgi-position-y-bottom.position-x-center.bgi-no-repeat.bgi-size-contain.bgi-attachment-fixed(style='background-image: url(assets/media/illustrations/dozzy-1/14.png)')
+      .d-flex.flex-column.flex-column-fluid.text-center.p-10
+        a.mb-10.pt-lg-10(href='/')
+          img.h-250px(alt='Logo' src='/public/theme/media/logos/logo.png')
+        .pt-lg-5
+          h1.fw-bold.fs-4x.text-gray-700.mb-10 #{statusCode}
+          .fw-semibold.fs-3.text-gray-400.mb-15
+            | #{name}
+            br
+            | #{i18n.APP.ERROR_MESSAGE_NOT_FOUND}
+          .text-center
+            a.btn.btn-lg.btn-primary.fw-bold(href='/') #{i18n.APP.GO_TO_HOMEPAGE}
+      .d-flex.flex-center.flex-column-auto.p-10
+        .d-flex.align-items-center.fw-semibold.fs-6
+          a.text-muted.text-hover-primary.px-2(href='/aviso-legal') #{i18n.APP.LEGAL_WARNING}
+          a.text-muted.text-hover-primary.px-2(href='/contacto') #{i18n.APP.CONTACT}

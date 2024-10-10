@@ -1,0 +1,19 @@
+nav.navbar.align-items-start.sidebar.sidebar-dark.accordion.bg-gradient-primary.p-0.navbar-dark
+    .container-fluid.d-flex.flex-column.p-0
+        a.navbar-brand.d-flex.justify-content-center.align-items-center.sidebar-brand.m-0(href='/')
+            .sidebar-brand-icon.rotate-n-15
+                i.fas.fa-laugh-wink
+            .sidebar-brand-text.mx-3
+                span IGF115
+        hr.sidebar-divider.my-0
+        ul#accordionSidebar.navbar-nav.text-light
+            //- Menus: /app/utils/main-menu.js
+            if Array.isArray(menus) && menus.length > 0
+                each menu in menus
+                    li.nav-item
+                        a.nav-link(href=menu.route)
+                            +icon(menu.icon)
+                            span= menu.title
+        .text-center.d-none.d-md-inline
+            button#sidebarToggle.btn.rounded-circle.border-0(type='button')
+

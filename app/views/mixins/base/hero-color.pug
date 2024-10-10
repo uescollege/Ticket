@@ -1,0 +1,15 @@
+mixin hero-color(args = {}, defaultArgs = {title: 'Titulo', description: "Descripción"})
+  - args = Object.assign(defaultArgs, args)
+  section.py-4.py-xl-5
+    .container.h-100
+      .text-white.bg-primary.border.rounded.border-0.p-4.py-5
+        .row.h-100
+          .col-md-10.col-xl-8.text-center.d-flex.d-sm-flex.d-md-flex.justify-content-center.align-items-center.mx-auto.justify-content-md-start.align-items-md-center.justify-content-xl-center
+            div
+              if args.title != ""
+                h1.text-uppercase.fw-bold.text-white.mb-3
+                  | #{args.title}
+              if args.description != ""
+                p.mb-4
+                  | #{args.description}
+              block hero-actions

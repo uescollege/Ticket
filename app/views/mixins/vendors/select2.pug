@@ -1,0 +1,65 @@
+mixin select2(args, args_default = { id: 'select2', placeholder: 'Select', isRequired: false, multiple: false, data: [], serverSide: false, url: '', columns: [], selected: [], selectId: '_id', text: 'name' })
+  - args = Object.assign(args_default, args)
+  .fv-row.mb-10
+    if args.label
+      label(class=`form-label ${args.isRequired ? 'required': ''}` for=args.id) #{args.label}
+    select(id=args.id name=args.id class="form-select form-select-solid" data-control=`${args.serverSide ? '' : 'select2'}` data-placeholder=i18n.APP.SELECT_AN_OPTION data-allow-clear="true")&attributes(attributes)
+        option
+        if Array.isArray(args.data) && args.data.length > 0
+          each item in args.data
+            option(value=item.id)= item.text
+    if (args.serverSide)
+      script.
+        document.addEventListener("DOMContentLoaded", function () {
+          $('##{args.id}').select2({
+            ajax: {
+              url: '#{args.url}',
+              dataType: 'json',
+              data: function (params) {
+                  var query = {
+                    _type: params._type,
+                    terms: params.term ,
+                    q: params.term, // search term
+                    query: {
+                      select: !{JSON.stringify(args.columns)}
+                    },
+                    page: params.page || 1
+                  }
+
+                  // Query parameters will be ?search=[term]&page=[page]
+                  return query;
+                },
+                processResults: function (data, params) {
+                  params.page = params.page || 1;
+                  let lang = $('html').attr('lang');
+                  return {
+                      results: data.map(function (item) {
+                        let text = 'unkown';
+                        if (typeof item.!{args.text} == 'object') {
+                          if (lang == 'es') {
+                            text = item.!{args.text}.es;
+                          } else {
+                            text = item.!{args.text}.en;
+                          }
+                        } else {
+                          text = item.!{args.text}
+                        }
+                        return {
+                          id: item.!{args.selectId},
+                          text
+                        }
+                      }),
+                  };
+              },
+              templateSelection: function (item) { return item.text; }
+            }
+          });
+        });
+    script.
+      document.addEventListener("DOMContentLoaded", function () {
+        const selected_!{args.id} = !{JSON.stringify(args.selected)};
+        if (selected_!{args.id}.length > 0) {
+          $('##{args.id}').val(selected_!{args.id}).trigger('change');
+        }
+      });
+

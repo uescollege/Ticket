@@ -1,0 +1,9 @@
+mixin input-information(args = {id, label, placeholder: '', value:'', isRequired: false, text: '', popover: {content: '', isHtml: false, trigger: 'hover'} })
+  .fv-row.mb-10
+    label.d-flex.align-items-center.form-label(for=args.id)
+      span(class=`${args.isRequired ? 'required': ''}`) #{args.label}
+      | #{JSON.stringify()}
+      i.fas.fa-exclamation-circle.ms-2.fs-7(data-bs-toggle='popover' data-bs-trigger=args.popover.trigger data-bs-html=`${args.popover.isHtml ? 'true': 'false'}` data-bs-content=args.popover.content)
+    input.form-control.form-control-lg.form-control-solid(id=args.id name=args.id value=args.value placeholder=args.placeholder)
+    if args.text != ''
+      .form-text #{args.text}

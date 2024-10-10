@@ -1,0 +1,8 @@
+extends /app/views/layouts/web
+
+append content
+  .vh-100.container.mx-auto
+    +hero-color({ title: "Hello, World!", description: "This is a test" })
+      block hero-actions
+        a.btn.btn-success(href="#") Click me
+          +icon('home')

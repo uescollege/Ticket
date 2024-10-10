@@ -1,0 +1,15 @@
+//- Este mixin se encarga de agregar los archivos de los vendors, que se indique
+//- Los archivos vendor se crea en el middleware del sistema
+//- las definiciones estan en el utils de vendors
+mixin addVendors(vendors)
+  //- vendorsPath = {nameVendor: { css: ['path1', 'path2'], js: ['path1', 'path2'] }}
+  //- vendors = ['nameVendor', 'nameVendor']
+  if typeof vendorsPath == 'object'
+    each vendor in vendors
+      if vendorsPath[vendor]
+        if vendorsPath[vendor].css
+          each css in vendorsPath[vendor].css
+            +addStylePlugin(css)
+        if vendorsPath[vendor].js
+          each js in vendorsPath[vendor].js
+            +addJavascriptPlugin(js)

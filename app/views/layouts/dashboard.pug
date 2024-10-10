@@ -1,0 +1,19 @@
+extends ./partials/_master.pug
+
+append main
+  include ../mixins/vendors/datatable.pug
+  include ../mixins/vendors/ckeditor.pug
+  include ../mixins/vendors/select2.pug
+  
+  #wrapper
+    include ./partials/dashboard/_sidebar.pug
+    #content-wrapper.d-flex.flex-column
+      #content
+        include ./partials/dashboard/_navbar.pug
+        .container-fluid
+          block content
+      include ./partials/dashboard/_footer.pug
+    a.border.rounded.d-inline.scroll-to-top(href='#page-top')
+      i.fas.fa-angle-up
+  
+  block drawers

@@ -1,0 +1,4 @@
+mixin input(args = {id, type: 'text', placeholder: '', value:'', isRequired: false, text: ''})
+  input.form-control.form-control-lg.form-control-solid(id=args.id type=args.type name=args.id value=args.value placeholder=args.placeholder)&attributes(attributes)
+  if args.text != ''
+    .form-text #{args.text}

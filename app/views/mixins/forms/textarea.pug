@@ -1,0 +1,4 @@
+mixin textarea(args = {id, text: '', value: '', placeholder: ''})
+  textarea.form-control.form-control-lg.form-control-solid(id=args.id name=args.id placeholder=args.placeholder)&attributes(attributes) #{args.value}
+  if args.text != ''
+    .form-text #{args.text}

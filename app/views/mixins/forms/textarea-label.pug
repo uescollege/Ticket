@@ -1,0 +1,6 @@
+mixin textarea-label(args = {id, label, text: '', value: '', placeholder: ''})
+  .fv-row.mb-10
+    label.mb-3.fs-4.text-primary(for=args.id) #{args.label}
+    textarea.form-control(id=args.id name=args.id placeholder=args.placeholder style="border-color: inherit;")&attributes(attributes) #{args.value}
+    if args.text != ''
+      .form-text #{args.text}

@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    "jsx": "preserve",
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "skipLibCheck": true,
+    "strict": true,
+    "allowJs": true,
+    "noEmit": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "types": [
+      "node"
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "#app": [
+        "app"
+      ],
+      "#app/*": [
+        "app/*"
+      ],
+      "#layers": [
+        "modules"
+      ],
+      "#layers/*": [
+        "modules/*"
+      ]
+    }
+  },
+  "include": [
+    "./app/**/*",
+    "modules/**/*"
+  ],
+  "exclude": [
+    "./dist"
+  ]
+}

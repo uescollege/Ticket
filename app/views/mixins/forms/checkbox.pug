@@ -1,0 +1,8 @@
+mixin checkbox(args = { id: 'checkbox', label: 'Checkbox', isCheck: false })
+  .d-flex.align-items-center.mt-3
+    label.form-check.form-check-inline.form-check-solid.me-5
+      if args.isCheck
+        input.form-check-input(name=`${args.id}` type='checkbox' value='1' checked)
+      else
+        input.form-check-input(name=`${args.id}` type='checkbox' value='1')
+      span.fw-semobold.ps-2.fs-6  #{args.label}

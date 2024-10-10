@@ -1,0 +1,9 @@
+mixin base-accordion(id, data)
+  if Array.isArray(data) && data.lenght > 0
+    .accordion.accordion-icon-collapse(id=`${id}`)
+      each item in data
+        .mb-5
+          .accordion-header.py-3.d-flex(data-bs-toggle='collapse' data-bs-target=`#${id}_item_${item._id}`)
+          h3.fs-4.fw-semibold.mb-0.ms-4 #{item.name}
+          .fs-6.collapse.show.ps-10(id=`${id}_item_${item._id}` data-bs-parent=`#${id}`) 
+            | #{item.body}

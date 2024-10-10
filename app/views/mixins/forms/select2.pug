@@ -1,0 +1,8 @@
+mixin select2(args = { id: 'select2', label: 'Select', placeholder: 'Select', isRequired: false, multiple: false, data: [] })
+  .fv-row.mb-10
+    label.fs-4.text-primary(class=`form-label ${args.isRequired ? 'required': ''}` for=args.id) #{args.label}
+    select(id=args.id name=args.id class="form-select form-select-solid" data-control="select2" data-placeholder=i18n.APP.SELECT_AN_OPTION data-allow-clear="true")
+        option
+        if Array.isArray(args.data) && args.data.length > 0
+          each item in args.data
+            option(value=item.id)= item.text

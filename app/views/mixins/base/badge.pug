@@ -1,0 +1,4 @@
+mixin base-badge(args = {}, defaultArgs = {label: "Title", type:"primary", isLight:false, isOutline:false, isCircle:false, isSquare:false})
+  - args = Object.assign(defaultArgs, args)
+  span(class=`badge ${args.isOutline ? 'badge-outline': ''} ${args.isSquare ? 'badge-square': ''} ${args.isCircle ? 'badge-circle': ''} badge${args.isLight ? '-light': ''}-${args.type}`)&attributes(attributes)
+    | #{args.label}

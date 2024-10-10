@@ -1,0 +1,32 @@
+mixin ckeditor (args, defaultOptions = { id: 'body', height: '800px' })
+  - args = Object.assign(defaultOptions, args)
+  textareac(id=args.id name=args.id)&attributes(attributes) #{args.value || ''}
+
+  script.
+    document.addEventListener("DOMContentLoaded", function () {
+      ClassicEditor
+        .create(document.getElementById('#{args.id}'), {
+          simpleUpload: {
+            // The URL that the images are uploaded to.
+            uploadUrl: '/images/upload',
+
+            // Enable the XMLHttpRequest.withCredentials property.
+            withCredentials: true,
+
+            //- // Headers sent along with the XMLHttpRequest to the upload server.
+            //- headers: {
+            //-     'X-CSRF-TOKEN': 'CSRF-Token',
+            //-     Authorization: 'Bearer <JSON Web Token>'
+            //- }
+          }
+        })
+        .then(editor => {
+            editor.editing.view.change(writer=>{
+                writer.setStyle('height', '#{args.height}', editor.editing.view.document.getRoot());
+            });
+            window.!{args.id}_ckeditor = editor;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+    });

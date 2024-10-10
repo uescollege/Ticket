@@ -1,0 +1,4 @@
+mixin checkbox-inline(id, name, label, value = '1')
+  label.form-check.form-check-sm.form-check-custom.form-check-solid.me-5.me-lg-20(for=id)
+    input.form-check-input(id=id type='checkbox' value=value name=name)&attributes(attributes)
+    span.form-check-label #{label}

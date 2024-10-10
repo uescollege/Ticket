@@ -1,0 +1,12 @@
+{
+  "name": "Progressive Web App",
+  "short_name": "IGF115",
+  "description": "Progressive Web App",
+  "icons": [
+  
+  ],
+  "start_url": "/",
+  "display": "fullscreen",
+  "theme_color": "#764ABC",
+  "background_color": "#764ABC"
+}

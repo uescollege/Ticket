@@ -1,0 +1,15 @@
+extends ./partials/_master.pug
+
+append styles
+  link(rel="preload" href="/public/css/client.bundle.css" as="style" onload="this.onload=null;this.rel='stylesheet'")
+  noscript
+    link(href='/public/css/client.bundle.css' rel='stylesheet' type='text/css' media="all")
+  link(href='/public/css/client.bundle.css' rel='stylesheet')
+
+block main
+  .container
+    .row.justify-content-center
+      .col-md-9.col-lg-12.col-xl-10
+        block content
+
+

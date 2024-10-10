@@ -1,0 +1,111 @@
+nav.navbar.navbar-expand.bg-white.shadow.mb-4.topbar
+    .container-fluid
+        button#sidebarToggleTop.btn.btn-link.d-md-none.rounded-circle.me-3(type='button')
+            i.fas.fa-bars
+        form.d-none.d-sm-inline-block.me-auto.ms-md-3.my-2.my-md-0.mw-100.navbar-search
+            .input-group
+                input.bg-light.form-control.border-0.small(type='text' placeholder='Search for ...')
+                button.btn.btn-primary.py-0(type='button')
+                    i.fas.fa-search
+        ul.navbar-nav.flex-nowrap.ms-auto
+            li.nav-item.dropdown.d-sm-none.no-arrow
+                a.dropdown-toggle.nav-link(aria-expanded='false' data-bs-toggle='dropdown' href='#')
+                    i.fas.fa-search
+                .dropdown-menu.dropdown-menu-end.p-3.animated--grow-in(aria-labelledby='searchDropdown')
+                    form.me-auto.navbar-search.w-100
+                        .input-group
+                            input.bg-light.border-0.form-control.small(type='text' placeholder='Search for ...')
+                            button.btn.btn-primary(type='button')
+                                i.fas.fa-search
+            li.nav-item.dropdown.no-arrow.mx-1
+                .nav-item.dropdown.no-arrow
+                    a.dropdown-toggle.nav-link(aria-expanded='false' data-bs-toggle='dropdown' href='#')
+                        span.badge.bg-danger.badge-counter 3+
+                        i.fas.fa-bell.fa-fw
+                    .dropdown-menu.dropdown-menu-end.dropdown-list.animated--grow-in
+                        h6.dropdown-header alerts center
+                        a.dropdown-item.d-flex.align-items-center(href='#')
+                            .me-3
+                                .bg-primary.icon-circle
+                                    i.fas.fa-file-alt.text-white
+                            div
+                                span.small.text-gray-500 December 12, 2019
+                                p A new monthly report is ready to download!
+                        a.dropdown-item.d-flex.align-items-center(href='#')
+                            .me-3
+                                .bg-success.icon-circle
+                                    i.fas.fa-donate.text-white
+                            div
+                                span.small.text-gray-500 December 7, 2019
+                                p $290.29 has been deposited into your account!
+                        a.dropdown-item.d-flex.align-items-center(href='#')
+                            .me-3
+                                .bg-warning.icon-circle
+                                    i.fas.fa-exclamation-triangle.text-white
+                            div
+                                span.small.text-gray-500 December 2, 2019
+                                p Spending Alert: We&apos;ve noticed unusually high spending for your account.
+                        a.dropdown-item.text-center.small.text-gray-500(href='#') Show All Alerts
+            li.nav-item.dropdown.no-arrow.mx-1
+                .nav-item.dropdown.no-arrow
+                    a.dropdown-toggle.nav-link(aria-expanded='false' data-bs-toggle='dropdown' href='#')
+                        span.badge.bg-danger.badge-counter 7
+                        i.fas.fa-envelope.fa-fw
+                    .dropdown-menu.dropdown-menu-end.dropdown-list.animated--grow-in
+                        h6.dropdown-header alerts center
+                        a.dropdown-item.d-flex.align-items-center(href='#')
+                            .dropdown-list-image.me-3
+                                img.rounded-circle(src='/public/media/avatars/avatar4.jpeg')
+                                .bg-success.status-indicator
+                            .fw-bold
+                                .text-truncate
+                                    span Hi there! I am wondering if you can help me with a problem I&apos;ve been having.
+                                p.small.text-gray-500.mb-0 Emily Fowler - 58m
+                        a.dropdown-item.d-flex.align-items-center(href='#')
+                            .dropdown-list-image.me-3
+                                img.rounded-circle(src='/public/media/avatars/avatar2.jpeg')
+                                .status-indicator
+                            .fw-bold
+                                .text-truncate
+                                    span I have the photos that you ordered last month!
+                                p.small.text-gray-500.mb-0 Jae Chun - 1d
+                        a.dropdown-item.d-flex.align-items-center(href='#')
+                            .dropdown-list-image.me-3
+                                img.rounded-circle(src='/public/media/avatars/avatar3.jpeg')
+                                .bg-warning.status-indicator
+                            .fw-bold
+                                .text-truncate
+                                    span
+                                        | Last month&apos;s report looks great, I am very happy with the progress so far, keep up the good work!
+                                p.small.text-gray-500.mb-0 Morgan Alvarez - 2d
+                        a.dropdown-item.d-flex.align-items-center(href='#')
+                            .dropdown-list-image.me-3
+                                img.rounded-circle(src='/public/media/avatars/avatar5.jpeg')
+                                .bg-success.status-indicator
+                            .fw-bold
+                                .text-truncate
+                                    span
+                                        | Am I a good boy? The reason I ask is because someone told me that people say this to all dogs, even if they aren&apos;t good...
+                                p.small.text-gray-500.mb-0 Chicken the Dog &middot; 2w
+                        a.dropdown-item.text-center.small.text-gray-500(href='#') Show All Alerts
+                .shadow.dropdown-list.dropdown-menu.dropdown-menu-end(aria-labelledby='alertsDropdown')
+            .d-none.d-sm-block.topbar-divider
+            li.nav-item.dropdown.no-arrow
+                .nav-item.dropdown.no-arrow
+                    a.dropdown-toggle.nav-link(aria-expanded='false' data-bs-toggle='dropdown' href='#')
+                        span.d-none.d-lg-inline.me-2.text-gray-600.small Valerie Luna
+                        img.border.rounded-circle.img-profile(src='/public/media/avatars/avatar1.jpeg')
+                    .dropdown-menu.shadow.dropdown-menu-end.animated--grow-in
+                        a.dropdown-item(href='#')
+                            i.fas.fa-user.fa-sm.fa-fw.me-2.text-gray-400
+                            | &nbsp;Profile
+                        a.dropdown-item(href='#')
+                            i.fas.fa-cogs.fa-sm.fa-fw.me-2.text-gray-400
+                            | &nbsp;Settings
+                        a.dropdown-item(href='#')
+                            i.fas.fa-list.fa-sm.fa-fw.me-2.text-gray-400
+                            | &nbsp;Activity log
+                        .dropdown-divider
+                        a.dropdown-item(href='#')
+                            i.fas.fa-sign-out-alt.fa-sm.fa-fw.me-2.text-gray-400
+                            | &nbsp;Logout

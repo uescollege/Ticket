@@ -1,0 +1,7 @@
+mixin base-button(id, label, tag = 'button', nativeType = 'submit', type="primary", isOutlite = false, isDashed = false)
+  if tag == 'a'
+    a(id=id class=`btn btn-${type} ${isOutlite ? 'btn-outline-' + type : ''} ${isDashed ? 'btn-dashed' : ''}`)&attributes(attributes)
+      | #{label}
+  else
+    button(id=id type=nativeType class=`btn btn-${type} ${isOutlite ? 'btn-outline-' + type : ''} ${isDashed ? 'btn-dashed' : ''}`)&attributes(attributes)
+      | #{label}

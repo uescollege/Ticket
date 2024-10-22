@@ -20,4 +20,13 @@ router.post(
   AdministratorController.CreateAdmin
 );
 
+router.get('/datatable',
+  query('draw').isInt().withMessage('Draw must be an integer'),
+  query('start').isInt().withMessage('Start must be an integer'),
+  query('length').isInt().withMessage('Length must be an integer'),
+  query('search'),
+  query('order'),
+  query('columns'),
+  EVResult, AdministratorController.ajaxDatatable);
+
 module.exports = router;

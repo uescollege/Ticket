@@ -11,27 +11,71 @@ append content
               button.btn.btn-sm.btn-light-primary.me-3(data-bs-toggle="modal" aria-label="Create administrator" data-bs-target="#create_administrator") #{i18n.APP.CREATE}
           .card-body
             .table-responsive
-              table.table.table-striped
-                thead
-                  tr
-                    th #{i18n.ADMINISTRATOR.AVATAR}
-                    th #{i18n.ADMINISTRATOR.NAME}
-                    th #{i18n.ADMINISTRATOR.EMAIL}
-                    th #{i18n.APP.ACTIONS}
-                tbody
-                  if Array.isArray(administrators) && administrators.length > 0
-                    each administrator in administrators
-                      tr
-                        td
-                          img.avatar(src=`/uploads/${administrator.avatar}`, alt=administrator.name)
-                        td #{administrator.name}
-                        td #{administrator.email}
-                        td
-                          a.btn.btn-primary(href=`/dashboard/administrators/${administrator.id}`) #{i18n.APP.EDIT}
-                          a.btn.btn-danger(href=`/dashboard/administrators/${administrator.id}/delete`) #{i18n.APP.DELETE}
-                  else
-                    tr
-                      td(colspan="4") #{i18n.APP.NO_RECORDS_FOUND}
+              +datatable('administrators', '/dashboard/administrators/datatable', `[
+      {
+        data: 'id', name: 'id', title: '', 
+        searchable: false, 
+        render: function (data, type, row) {
+          return "<div class='form-check form-check-sm form-check-custom form-check-solid'><input class='form-check-input' type='checkbox' value='" + row.id +"'></div>";
+        },
+        orderable: false
+      },
+      {
+        data: 'avatar', name: 'avatar', title: '${i18n.ADMINISTRATOR.AVATAR}',
+        render: function (data, type, row) {
+          try {
+            if (!data.filename) {
+              throw new Error('No image');
+            }
+            const hostname = window.location.origin;
+            new URL(hostname + '/uploads/meta-images/' + data.filename);
+            return '<div class="symbol symbol-50px"><img src="' + hostname + '/uploads/meta-images/' + data.filename + '" class="w-100"/></div>';
+          } catch (error) {
+            return '<div class="symbol symbol-50px"><img src="/public/images/logo.webp" class="w-100"/></div>';
+          }
+        },
+        orderable: false,
+        searchable: false
+      },
+      {
+        data: 'name', name: 'name', title: '${i18n.ADMINISTRATOR.NAME}'
+      },
+      {
+        data: 'email', name: 'email', title: 'email',
+      },
+      {
+        data: null, name: null, title: '${i18n.APP.ACTIONS}', searchable: false, orderable: false,
+        render: function (data, type, row) {
+          let html = '';
+          html += '<a href="/dashboard/administrators/'+row.id+'/edit" class="btn btn-sm btn-clean btn-primary btn-icon"><svg height="20px" width="20px" version="1.1" id="_x32_" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve" fill="currentColor"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <style type="text/css"> .st0{fill:#currentColor;} </style> <g> <path class="st0" d="M494.56,55.774l-38.344-38.328c-23.253-23.262-60.965-23.253-84.226,0l-35.878,35.878l122.563,122.563 l35.886-35.878C517.814,116.747,517.814,79.044,494.56,55.774z"></path> <polygon class="st0" points="0,389.435 0,511.998 122.571,511.998 425.246,209.314 302.691,86.751 "></polygon> </g> </g></svg></a>';
+          html += '<button class="btn btn-sm btn-clean btn-danger btn-icon ms-3" onclick="administrator(\\'' + row.id +'\\')"><svg fill="currentColor" width="20px" height="20px" viewBox="-80 0 512 512" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"></path></g></svg></button>';
+          
+          return html;
+        }
+      }
+    ]`, '/categorias/massive')
+            //- .table-responsive
+            //-   table.table.table-striped
+            //-     thead
+            //-       tr
+            //-         th #{i18n.ADMINISTRATOR.AVATAR}
+            //-         th #{i18n.ADMINISTRATOR.NAME}
+            //-         th #{i18n.ADMINISTRATOR.EMAIL}
+            //-         th #{i18n.APP.ACTIONS}
+            //-     tbody
+            //-       if Array.isArray(administrators) && administrators.length > 0
+            //-         each administrator in administrators
+            //-           tr
+            //-             td
+            //-               img.avatar(src=`/uploads/${administrator.avatar}`, alt=administrator.name)
+            //-             td #{administrator.name}
+            //-             td #{administrator.email}
+            //-             td
+            //-               a.btn.btn-primary(href=`/dashboard/administrators/${administrator.id}`) #{i18n.APP.EDIT}
+            //-               a.btn.btn-danger(href=`/dashboard/administrators/${administrator.id}/delete`) #{i18n.APP.DELETE}
+            //-       else
+            //-         tr
+            //-           td(colspan="4") #{i18n.APP.NO_RECORDS_FOUND}
   script.
     document.addEventListener('DOMContentLoaded', function() {
      

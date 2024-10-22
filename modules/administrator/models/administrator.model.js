@@ -61,6 +61,38 @@ class Administrator {
     return await knex('administrators').where('id', _id).delete();
   }
 
+  /**
+   * DataTable
+   */
+  static async DataTable(queryData) {
+    const { draw, start, length, search, order, columns } = queryData;
+    const { value: searchValue } = search;
+    const { column, dir } = order[0];
+    const { data } = columns[column];
+
+    const administrators = await knex('administrators')
+      .select('id').select('name').select('email').select('avatar')
+      .where('name', 'like', `%${searchValue}%`)
+      .orWhere('email', 'like', `%${searchValue}%`)
+      .orderBy(data, dir)
+      .limit(length)
+      .offset(start);
+
+    const total = await knex('administrators').count('* as total').first();
+    const filtered = await knex('administrators')
+      .where('name', 'like', `%${searchValue}%`)
+      .orWhere('email', 'like', `%${searchValue}%`)
+      .count('* as total')
+      .first();
+
+    return {
+      draw,
+      recordsTotal: total.total,
+      recordsFiltered: filtered.total,
+      data: administrators
+    };
+  }
+
 }
 
 module.exports = {

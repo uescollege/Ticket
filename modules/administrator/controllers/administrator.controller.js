@@ -76,6 +76,23 @@ class AdministratorController {
     }
   }
 
+
+  /**
+   * Datatable for administrators
+   * @param {*} req
+   * @param {*} res
+   * @returns response
+   */
+  static async ajaxDatatable(req, res) {
+    const {queryData} = Controller.matchedData(req);
+    try {
+      const administrators = await Administrator.DataTable(queryData);
+      return res.json(administrators);
+    } catch (error) {
+      Controller.errorHandler(error, req, res);
+    }
+  }
+
 }
 
 module.exports = {

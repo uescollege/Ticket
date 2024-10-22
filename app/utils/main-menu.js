@@ -1,9 +1,14 @@
 module.exports = [
   {
     title: "Inicio",
-    route: '/panel',
+    route: '/dashboard',
     icon: 'home',
   },
+  {
+    title: "Administrators",
+    route: '/dashboard/administrators',
+    icon: 'admin',
+  }
   // {
   //   heading: 'Blog',
   //   route: '',

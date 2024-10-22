@@ -1,0 +1,62 @@
+extends /app/views/layouts/dashboard
+
+append content
+  .vh-100.container.mx-auto
+    .row
+      .col-12
+        .card
+          .card-header.d-flex.justify-content-between.align-items-center
+            h3.card-title #{i18n.ADMINISTRATOR.LIST_OF_ADMINISTRATORS}
+            .card-toolbar
+              button.btn.btn-sm.btn-light-primary.me-3(data-bs-toggle="modal" aria-label="Create administrator" data-bs-target="#create_administrator") #{i18n.APP.CREATE}
+          .card-body
+            .table-responsive
+              table.table.table-striped
+                thead
+                  tr
+                    th #{i18n.ADMINISTRATOR.AVATAR}
+                    th #{i18n.ADMINISTRATOR.NAME}
+                    th #{i18n.ADMINISTRATOR.EMAIL}
+                    th #{i18n.APP.ACTIONS}
+                tbody
+                  if Array.isArray(administrators) && administrators.length > 0
+                    each administrator in administrators
+                      tr
+                        td
+                          img.avatar(src=`/uploads/${administrator.avatar}`, alt=administrator.name)
+                        td #{administrator.name}
+                        td #{administrator.email}
+                        td
+                          a.btn.btn-primary(href=`/dashboard/administrators/${administrator.id}`) #{i18n.APP.EDIT}
+                          a.btn.btn-danger(href=`/dashboard/administrators/${administrator.id}/delete`) #{i18n.APP.DELETE}
+                  else
+                    tr
+                      td(colspan="4") #{i18n.APP.NO_RECORDS_FOUND}
+  script.
+    document.addEventListener('DOMContentLoaded', function() {
+     
+    });
+
+    function administrators_success(response) {
+      if (response.status === 200) {
+        window.location.reload();
+      }
+    }
+
+append modals
+  +base-modal('create_administrator', `/dashboard/administrators`, 'POST', 'lg', false, 'administrators_success', i18n.APP.CREATE)
+    .row
+      .col-12  
+        +input-label({id: 'name', label: i18n.ADMINISTRATOR.NAME, type: "text", placeholder: i18n.ADMINISTRATOR.NAME, isRequired: true})
+    .row
+      .col-12  
+        +input-label({id: 'email', label: i18n.ADMINISTRATOR.EMAIL, type: "email", placeholder: i18n.ADMINISTRATOR.EMAIL, isRequired: true})
+    .row
+      .col-12  
+        +input-label({id: 'password', label: i18n.APP.PASSWORD, type: "password", placeholder: i18n.APP.PASSWORD, isRequired: true})
+    .row
+      .col-12  
+        +input-label({id: 'password_confirmation', label: i18n.APP.PASSWORD_CONFIRMATION, type: "password", placeholder: i18n.APP.PASSWORD_CONFIRMATION, isRequired: true})
+    .row.mb-5
+      .col-12  
+        +input-label({id: 'avatar', label: i18n.ADMINISTRATOR.AVATAR, type: "file", placeholder: i18n.ADMINISTRATOR.AVATAR, isRequired: true})

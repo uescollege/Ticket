@@ -1,6 +1,6 @@
 const { Router } = require("express");
 const router = Router();
 
-router.use('/dashboard', require('./routes'));
+router.use('/dashboard/administrators', require('./routes'));
 
 module.exports = router;

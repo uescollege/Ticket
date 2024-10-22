@@ -2,7 +2,7 @@ const { mkdirSync, existsSync } = require("fs");
 const path = require("path");
 const multer = require("multer");
 
-const storage = multer({
+const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "/tmp/my-uploads");
   },
@@ -15,7 +15,7 @@ const storage = multer({
 /**
  * Avatar storage
  */
-const avatarDisk = storage({
+const avatarDisk = multer.diskStorage({
   destination: function (req, file, cb) {
     // create a folder if not exists
     const avatar_path = path.resolve(__dirname, "../../uploads/avatars");
@@ -36,7 +36,7 @@ const avatarDisk = storage({
   }
 });
 
-const imageDisk = storage({
+const imageDisk = multer.diskStorage({
   destination: function (req, file, cb) {
     const image_path = path.resolve(__dirname, '../../uploads/images');
     if (!existsSync(image_path)) {
@@ -56,7 +56,7 @@ const imageDisk = storage({
   }
 });
 
-const thumbnailDisk = storage({
+const thumbnailDisk = multer.diskStorage({
   destination: function (req, file, cb) {
     // create a folder if not exists
     const thumbnail_path = path.resolve(__dirname, '../../uploads/thumbnails');
@@ -77,6 +77,11 @@ const thumbnailDisk = storage({
     cb(null, file.fieldname + '-' + uniqueSuffix + '.' + ext);
   }
 });
+
+
+/**
+ * Upload
+ */
 
 const upload = multer({ storage: storage });
 

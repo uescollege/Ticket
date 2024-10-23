@@ -1,8 +1,63 @@
 extends /app/views/layouts/web
 
+
 append content
-  .vh-100.container.mx-auto
-    +hero-color({ title: "Hello, World!", description: "This is a test" })
-      block hero-actions
-        a.btn.btn-success(href="#") Click me
-          +icon('home')
+     main(class="flex-grow-1")
+      section(class="d-flex justify-content-center align-items-center w-100 py-12 bg-black text-white")
+        .container.px-4.md-px-6.text-center
+          h1(class="display-4 fw-bold") Vive la experiencia. Compra tus tickets ahora.
+          p(class="lead text-gray") Accede a los mejores eventos con un solo clic. Fácil, rápido y seguro.
+          .d-flex.justify-content-center.gap-3
+            a.btn.bg-btn(href="#") Ver eventos
+            a.btn.btn-outline-light(href="#") Cómo funciona
+      section(class="d-flex justify-content-center align-items-center w-100 py-8 bg-gray-100")
+        .container.px-4.md-px-6
+          h2(class="text-center text-black fw-bold display-6 mb-5") Eventos Destacados
+          .row.g-3.row-cols-1.row-cols-md-2.row-cols-lg-3
+              +eventCard({
+                    title: "Concierto de Rock",
+                    description: "Una noche llena de energía con las mejores bandas.",
+                    date: "15 de Noviembre, 2024",
+                    location: "Estadio Nacional",
+                  })
+              +eventCard({
+                  title: "Festival de Comida",
+                  description: "Degusta los mejores platillos de chefs reconocidos.",
+                  date: "5 de Diciembre, 2024",
+                  location: "Parque Central",
+                })
+              +eventCard({
+                  title: "Conferencia Tech",
+                  description: "Aprende de los líderes en tecnología e innovación.",
+                  date: "20 de Diciembre, 2024",
+                  location: "Centro de Convenciones",
+                })
+      section(class="d-flex justify-content-center align-items-center w-100 py-8 py-md-6 py-lg-8")
+        .container.px-3.px-md-4
+          h2.text-center.text-black.fw-bold.display-6.mb-5
+            | ¿Por qué EventoTicket?
+          .row.g-4.row-cols-1.row-cols-md-2.row-cols-lg-3
+            .col
+              .d-flex.flex-column.align-items-center.text-center
+                +icon('users')
+                h3.fs-4.fw-semibold.lh-1.text-nowrap.text-black.mt-3 Fácil de usar
+                p
+                 | Interfaz intuitiva que te permite comprar tickets en minutos.
+            .col
+              .d-flex.flex-column.align-items-center.text-center
+                +icon('ticket')
+                h3.fs-4.fw-semibold.lh-1.text-nowrap.text-black.mt-3 Seguro
+                p
+                 | Transacciones encriptadas y garantía anti-fraude en cada compra.
+            .col
+                .d-flex.flex-column.align-items-center.text-center
+                  +icon('calendar')
+                  h3.fs-4.fw-semibold.lh-1.text-nowrap.text-black.mt-3 Amplia selección
+                  p
+                  | Accede a una gran variedad de eventos en tu ciudad y alrededores.
+      section(class="d-flex justify-content-center align-items-center w-100 py-8 bg-black text-white")
+        .container.px-4.md-px-6.text-center
+          h2(class="display-4 fw-bold") ¿Listo para vivir experiencias inolvidables?
+          p(class="lead text-gray") No te pierdas los mejores eventos. Compra tus tickets ahora y crea recuerdos que durarán toda la vida.
+          .d-flex.justify-content-center.gap-3
+            a.btn.bg-btn(href="#") Explorar eventos

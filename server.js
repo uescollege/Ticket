@@ -47,8 +47,9 @@ app.use(cookieParser(process.env.SECRET || "123456789iamasecret987654321look"));
 app.set('trust proxy', 1);
 app.use(session(sessionOptions));
 
+app.use(session({ secret: 'mechanic keyboard' }));
 app.use(passport.initialize());
-app.use(passport.session());
+app.use(passport.session()); 
 
 if (process.env.NODE_ENV === 'development') {
   // helpers for i18n

@@ -4,8 +4,8 @@ const config = require("#app/config/index");
 const existsModule = require("#app/helpers/exists-module.helper");
 const { exit } = require('process');
 
-if (!existsModule('admin')){
-  console.log('No existe el modulo admin o scort');
+if (!existsModule('administrator')){
+  console.log('No existe el modulo admin o User');
   exit(1);
 }
 
@@ -29,7 +29,7 @@ function isApiAuth(req, res, next) {
  */
 async function isAdminAuth(req, res, next) {
   try {
-    if (!req.user || !req.user.isAdmin) {
+    if (!req.user || !req.user.is_admin) {
       return res.redirect("/admin/signin");
     }
     
@@ -44,17 +44,18 @@ async function isAdminAuth(req, res, next) {
 }
 
 /**
- * si existe la sesion y es admin se redirecciona al panel
+ * si existe la sesion y es admin se redirecciona al dashboard
  */
 function isAdminAuthRedirect(req, res, next) {
-  if (req.user && req.user.isAdmin) {
-    return res.redirect("/panel");
+  console.log("USER", req.user);
+  if (req.user && req.user.is_admin) {
+    return res.redirect("/dashboard");
   }
   return next();
 }
 
-function isScortAuthRedirect(req, res, next) {
-  if (req.user && req.user.isScort) {
+function isUserAuthRedirect(req, res, next) {
+  if (req.user) {
     return res.redirect("/profile");
   }
   return next();
@@ -93,5 +94,5 @@ module.exports = {
   findJWTToken,
   isAdminAuth,
   isAdminAuthRedirect,
-  isScortAuthRedirect
+  isUserAuthRedirect
 }

@@ -17,14 +17,11 @@ mixin base-modal(id, action = "#", method = "POST", size='lg', isFullscreen=fals
               div 
                 if block
                   block
-            .text-center.pt-15
+            .text-center(style="margin-top: 20px;")
               button.btn.btn-danger.me-3(id=`cancel_button_${id}` type="button") #{i18n.APP.CANCEL}
               button.btn.btn-light.me-3(type='reset') #{i18n.APP.RESET}
               button.btn.btn-primary(type='submit')
                 span.indicator-label #{i18n.APP.SAVE}
-                span.indicator-progress
-                  | #{i18n.APP.PLEASE_WAIT}
-                  span.spinner-border.spinner-border-sm.align-middle.ms-2
 
   script.
     function close_modal_!{id} (instance) {

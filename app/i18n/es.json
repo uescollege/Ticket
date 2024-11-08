@@ -32,5 +32,10 @@
   "PASSWORD_CONFIRMATION_DOES_NOT_MATCH": "La confirmación de la contraseña no coincide",
   "PASSWORD": "Contraseña",
   "PASSWORD_CONFIRMATION": "Confirmación de la contraseña",
-  "NO_RECORDS_FOUND": "No se encontraron registros"
+  "NO_RECORDS_FOUND": "No se encontraron registros",
+  "ARE_YOU_SURE": "¿Estás seguro?",
+  "DELETE_CONFIRMATION": "¿Estás seguro de que deseas eliminar este registro?",
+  "YES": "Sí",
+  "DELETED": "Eliminado",
+  "YOUR_RECORD_HAS_BEEN_DELETED": "Tu registro ha sido eliminado"
 }

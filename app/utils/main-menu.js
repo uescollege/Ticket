@@ -8,6 +8,11 @@ module.exports = [
     title: "Administrators",
     route: '/dashboard/administrators',
     icon: 'admin',
+  },
+  {
+    title: "Assistants",
+    route: '/dashboard/assistants',
+    icon: 'user',
   }
   // {
   //   heading: 'Blog',

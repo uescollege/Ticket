@@ -1,0 +1,93 @@
+extends /app/views/layouts/dashboard
+
+append content
+  .vh-100.container.mx-auto
+    .row
+      .col-12
+        .card
+          .card-body
+            .d-flex
+              div(style="max-width: 200px;")
+                figure 
+                  img.rounded(src=`/uploads/avatars/${user.avatar}` alt='User avatar' style="max-width: 200px;") 
+              .col
+                .d-flex.justify-content-between.align-items-start
+                  .col.px-3
+                    h3.card-title.text-start #{i18n.USER.USER_INFORMATION}
+                    p 
+                      strong #{i18n.USER.NAME}: 
+                      | #{user.name}
+                    p
+                      strong #{i18n.USER.EMAIL}:
+                      | #{user.email}
+                  .toolbar
+                    button.btn.btn-primary.me-3(data-bs-toggle="modal" aria-label="Edit user" data-bs-target="#change_password") #{i18n.USER.CHANGE_PASSWORD}
+                    a.btn.btn-secondary(href="/dashboard/users") #{i18n.APP.BACK}
+
+    .card.mb-5.mb-xl-10.mt-3
+      .card-header
+        .card-title.m-0
+          h3.fw-bold.m-0 #{i18n.USER.EDIT_USER}
+      .card-body
+        +base-form({ id: 'update_user', action: `/dashboard/users/${user.id}`, method: 'PUT', success: 'success_edit_user'})(enctype="multipart/form-data")
+          .p-9
+            .row.mb-5
+              label.col-md-4.col-form-label.required.fw-semibold.fs-6 #{i18n.USER.NAME}
+              .col-12.col-md-8
+                +input-label({id: 'name', value: user.name, label: i18n.USER.NAME, type: "text", placeholder: i18n.USER.NAME, isRequired: true})
+            .row.mb-5
+              label.col-md-4.col-form-label.required.fw-semibold.fs-6 #{i18n.USER.EMAIL}
+              .col-12.col-md-8
+                +input-label({id: 'email', value: user.email, label: i18n.USER.EMAIL, type: "email", placeholder: i18n.USER.EMAIL, isRequired: true})
+            
+            .row.mb-5
+              label.col-md-4.col-form-label.required.fw-semibold.fs-6 #{i18n.USER.AVATAR}
+              .col-12.col-md-8
+                +input-label({ id: 'avatar', label: 'Avatar', type: 'file', placeholder: 'Avatar', isRequired: true })(data-control="cropper" cropper-name='avatar' accept=".png, .jpg, .jpeg, .webp")
+
+          .card-footer.d-flex.justify-content-between.py-6.px-9
+            button.btn.btn-primary(type='submit' aria-label="Guardar registro") #{i18n.APP.SAVE}
+    
+              
+  script.
+    document.addEventListener("DOMContentLoaded", function () {
+    });
+
+    function success_edit_user() {
+      // reeload window
+      window.location.reload();
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const avatar_input = document.getElementById('avatar');
+      avatar_input.addEventListener('change', function (e) {
+        const a_cropper = document.getElementById('avatar_cropper');
+        a_cropper.innerHTML = '<img id="avatar_preview" src="" alt="Thumbnail preview">';
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const img = document.getElementById('avatar_preview');
+          img.src = e.target.result;
+          const cropper = new Cropper(img, {
+            aspectRatio: 1,
+            viewMode: 1,
+            responsive: true,
+            background: false,
+            crop: function (e) {
+
+            }
+          });
+          window.avatar_cropper = cropper;
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+
+append modals
+  +base-modal('change_password', `/dashboard/users/${user.id}/change-password`, 'PUT', 'lg', false, 'users_success', i18n.USER.CHANGE_PASSWORD)
+    .row.mt-12
+      .col-12  
+        +input-label({id: 'password', label: i18n.APP.PASSWORD, type: "password", placeholder: i18n.APP.PASSWORD, isRequired: true})
+    .row.mt-5
+      .col-12  
+        +input-label({id: 'password_confirmation', label: i18n.APP.PASSWORD_CONFIRMATION, type: "password", placeholder: i18n.APP.PASSWORD_CONFIRMATION, isRequired: true})

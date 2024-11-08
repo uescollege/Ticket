@@ -13,6 +13,11 @@ module.exports = [
     title: "Assistants",
     route: '/dashboard/assistants',
     icon: 'user',
+  },
+  {
+    title: "Users",
+    route: '/dashboard/users',
+    icon: 'user',
   }
   // {
   //   heading: 'Blog',

@@ -54,28 +54,7 @@ append content
         }
       }
     ]`, '/categorias/massive')
-            //- .table-responsive
-            //-   table.table.table-striped
-            //-     thead
-            //-       tr
-            //-         th #{i18n.ADMINISTRATOR.AVATAR}
-            //-         th #{i18n.ADMINISTRATOR.NAME}
-            //-         th #{i18n.ADMINISTRATOR.EMAIL}
-            //-         th #{i18n.APP.ACTIONS}
-            //-     tbody
-            //-       if Array.isArray(administrators) && administrators.length > 0
-            //-         each administrator in administrators
-            //-           tr
-            //-             td
-            //-               img.avatar(src=`/uploads/${administrator.avatar}`, alt=administrator.name)
-            //-             td #{administrator.name}
-            //-             td #{administrator.email}
-            //-             td
-            //-               a.btn.btn-primary(href=`/dashboard/administrators/${administrator.id}`) #{i18n.APP.EDIT}
-            //-               a.btn.btn-danger(href=`/dashboard/administrators/${administrator.id}/delete`) #{i18n.APP.DELETE}
-            //-       else
-            //-         tr
-            //-           td(colspan="4") #{i18n.APP.NO_RECORDS_FOUND}
+
   script.
     document.addEventListener('DOMContentLoaded', function() {
      

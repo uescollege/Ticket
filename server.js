@@ -121,6 +121,7 @@ app.get('/sitemaps.xml', async function (req, res) {
 
 app.use(compression({ level: 9 }));
 app.use('/public', express.static(path.join(__dirname, 'public')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use('/', require('#app/routes'));
 app.use('/',  ...moduleRoutes);

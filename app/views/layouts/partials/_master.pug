@@ -31,6 +31,7 @@ html(lang=`${lang || 'en'}`)
 
     link(href='/public/bootstrap/css/bootstrap.min.css' rel='stylesheet')
     link(href='/public/css/styles.min.css' rel='stylesheet')
+    link(href='/public/css/styles-extend.css' rel='stylesheet')
     link(href='/public/fonts/fontawesome-all.min.css' rel='stylesheet')
 
     block renderVendor
@@ -111,6 +112,7 @@ html(lang=`${lang || 'en'}`)
     include ../../mixins/base/paginate.pug
     include ../../mixins/base/hero-color.pug
     include ../../mixins/base/icon.pug
+    include ../../mixins/base/event-card.pug
 
     //- app mixins
     include ../../mixins/app/h1.pug

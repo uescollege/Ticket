@@ -1,6 +1,6 @@
 const { Router } = require("express");
 const router = Router();
 
-router.use('/panel', require('./routes'));
+router.use('/dashboard', require('./routes'));
 
 module.exports = router;

@@ -1,6 +1,6 @@
 mixin input-label(args = {id, label, type: 'text', placeholder: '', value:'', isRequired: false, text: ''})
   .fv-row.mb-10
-    label.fs-4.text-primary(class=`mb-3 ${args.isRequired ? 'required': ''}` for=args.id) #{args.label}
+    label.form-label.text-primary(class=`mb-3 ${args.isRequired ? 'required': ''}` for=args.id) #{args.label}
     input.form-control(id=args.id type=args.type name=args.id value=args.value placeholder=args.placeholder style="border-color: inherit;")&attributes(attributes)
     if args.text != ''
       .form-text #{args.text}

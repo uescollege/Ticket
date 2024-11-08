@@ -1,0 +1,207 @@
+mixin base-form(args, argsDefault = { id: 'form', action: '', method: 'post', success: '' })
+  - args = Object.assign(argsDefault, args)
+  form(id=`${args.id}_form` action=args.action method=args.method)&attributes(attributes)
+    if block
+      block
+
+  script.
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const submit_button_!{args.id} = document.querySelector('##{args.id}_form button[type="submit"]');
+      
+      submit_button_!{args.id}.addEventListener('click', function (e) {
+        e.preventDefault();
+        const successEvent = '#{args.success}';
+        const form = document.querySelector('##{args.id}_form');
+        //- const formData = new FormData(form);
+        const url = form.getAttribute('action');
+        const method = form.getAttribute('method');
+
+        const exists_file =$(form).find("input[type=\"file\"]:not(.ck-hidden)").length > 0;
+
+        const form_data = new FormData(form);
+
+        //- exists data-control="ckeditor"
+        const ckeditor = $(form).find('[data-control="ckeditor"]');
+        if (ckeditor.length > 0) {
+          for (let i = 0; i < ckeditor.length; i++) {
+            const element = ckeditor[i];
+            const name = element.getAttribute('ckeditor-name');
+            if (window[`${name}_ckeditor`]) {
+              const value = window[`${name}_ckeditor`].getData();
+              form_data.set(name, value);
+            }
+          }
+        }
+
+        if (exists_file) {
+          //- exist data-control="cropper"
+          const cropper = $(form).find('[data-control="cropper"]');
+          if (cropper.length > 0) {
+            for (let i = 0; i < cropper.length; i++) {
+              const element = cropper[i];
+              const name = element.getAttribute('cropper-name');
+              //- const target = element.getAttribute('cropper-target');
+
+              if (window[`${name}_cropper`] && window[`${name}_cropper`].url) {
+                //- cropper name is a file's name input with original image, set new cropper image to this input
+                // remove
+                form_data.delete(name);
+                const dataURL = window[`${name}_cropper`].getCroppedCanvas().toDataURL();
+                const blob = dataURItoBlob(dataURL);
+                const file = new File([blob], "cropped.jpg", { type: blob.type });
+                form_data.set(name, file);
+              }
+            }
+          }
+        }
+
+        const ajax_data = {
+          url: url,
+          method: method,
+          data:  exists_file ? form_data : new URLSearchParams(form_data).toString(),
+        }
+
+        if (exists_file) {
+          ajax_data.processData = false;
+          ajax_data.contentType = false;
+        }
+        
+        Swal.showLoading();
+        //- ajax
+        $.ajax({
+          ...ajax_data,
+          
+          success: function (data, status) {
+            Swal.close();
+            if (status == 'success') {
+
+              if (data.ok) {
+                Swal.fire({
+                  text: data.msg,
+                  icon: "success",
+                  buttonsStyling: false,
+                  confirmButtonText: "#{i18n.APP.GOT_IT}",
+                  customClass: {
+                    confirmButton: "btn btn-primary"
+                  }
+                })
+                try {
+                  const event = new CustomEvent(successEvent, { detail: data });
+                  if (document.dispatchEvent(event)) {
+                    eval(successEvent)(data);
+                  }
+                } catch (error) {
+                  console.log(error);
+                }
+
+              } else {
+                Swal.fire({
+                  text: '#{i18n.APP.SOMETHING_WENT_WRONG}',
+                  icon: "error",
+                  buttonsStyling: false,
+                  confirmButtonText: "#{i18n.APP.GOT_IT}",
+                  customClass: {
+                    confirmButton: "btn btn-primary"
+                  }
+                });
+              }
+            } else {
+              Swal.fire({
+                text: data.msg,
+                icon: "error",
+                buttonsStyling: false,
+                confirmButtonText: "#{i18n.APP.GOT_IT}",
+                customClass: {
+                  confirmButton: "btn btn-primary"
+                }
+              });
+            }
+          },
+          error: function (response) {
+            Swal.close();
+            if (response.responseJSON.errors) {
+              const errors = response.responseJSON.errors; // [{ location: 'name', msg: 'message' }]
+              const alert_container = document.createElement('div');
+              alert_container.classList.add('alert', 'alert-custom', 'alert-danger', 'fade', 'show', 'mb-5');
+              alert_container.setAttribute('role', 'alert');
+              for (let i = 0; i < errors.length; i++) {
+                const error = errors[i];
+                const alert = document.createElement('div');
+                alert.classList.add('alert-text');
+                alert.innerHTML = error.msg;
+                alert_container.appendChild(alert);
+              }
+              Swal.fire({
+                html: alert_container,
+                icon: "error",
+                buttonsStyling: false,
+                confirmButtonText: "#{i18n.APP.GOT_IT}",
+                customClass: {
+                  confirmButton: "btn btn-primary"
+                }
+              });
+            } else {
+              switch (response.status) {
+                case 403:
+                  Swal.fire({
+                    text: response.responseJSON.msg,
+                    icon: "error",
+                    buttonsStyling: false,
+                    confirmButtonText: "#{i18n.APP.GOT_IT}",
+                    customClass: {
+                      confirmButton: "btn btn-primary"
+                    }
+                  });
+                  break;
+
+                case 404:
+                  Swal.fire({
+                    text: response.responseJSON.msg,
+                    icon: "error",
+                    buttonsStyling: false,
+                    confirmButtonText: "#{i18n.APP.GOT_IT}",
+                    customClass: {
+                      confirmButton: "btn btn-primary"
+                    }
+                  });
+                  break;
+                case 409:
+                  Swal.fire({
+                    text: response.responseJSON.msg,
+                    icon: "error",
+                    buttonsStyling: false,
+                    confirmButtonText: "#{i18n.APP.GOT_IT}",
+                    customClass: {
+                      confirmButton: "btn btn-primary"
+                    }
+                  });
+                  break;
+                case 400:
+                  Swal.fire({
+                    text: response.responseJSON.msg,
+                    icon: "error",
+                    buttonsStyling: false,
+                    confirmButtonText: "#{i18n.APP.GOT_IT}",
+                    customClass: {
+                      confirmButton: "btn btn-primary"
+                    }
+                  });
+                  break;
+                default:
+                  Swal.fire({
+                    text: "#{i18n.APP.SOMETHING_WENT_WRONG}",
+                    icon: "error",
+                    buttonsStyling: false,
+                    confirmButtonText: "#{i18n.APP.GOT_IT}",
+                    customClass: {
+                      confirmButton: "btn btn-primary"
+                    }
+                  });
+              }
+            }
+          }
+        });
+      });
+
+    })

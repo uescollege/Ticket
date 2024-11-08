@@ -1,13 +1,13 @@
 const logger = require("./logger.helper");
 /**
- * Función para manejar respuestas exitosas 
+ * Función para manejar respuestas exitosas
  */
- function successHandler (data, res, msg = "", status = 200) {
+function successHandler(data, res, msg = "", status = 200) {
   res.status(status).json({
     ok: true,
     data: data,
-    msg: msg
+    msg: msg,
   });
 }
 
-module.exports = successHandler
+module.exports = successHandler;

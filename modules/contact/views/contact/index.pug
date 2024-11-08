@@ -1,0 +1,163 @@
+extends /app/views/layouts/dashboard
+
+append content
+  .vh-100.container.mx-auto
+    .row
+      .col-12
+        .card
+          .card-header.d-flex.justify-content-between.align-items-center
+            h3.card-title #{i18n.CONTACT.LIST_OF_CONTACTS}
+            .card-toolbar
+              button.btn.btn-sm.btn-light-primary.me-3(data-bs-toggle="modal" aria-label="Create contact" data-bs-target="#create_contact") #{i18n.APP.CREATE}
+          .card-body
+            .table-responsive
+              +datatable('contacts', '/dashboard/contacts/datatable', `[
+      {
+        data: 'id', name: 'id', title: '', 
+        searchable: false, 
+        render: function (data, type, row) {
+          return "<div class='form-check form-check-sm form-check-custom form-check-solid'><input class='form-check-input' type='checkbox' value='" + row.id +"'></div>";
+        },
+        orderable: false
+      },
+      {
+        data: 'name', name: 'name', title: '${i18n.CONTACT.NAME}'
+      },
+      {
+        data: 'email', name: 'email', title: '${i18n.CONTACT.EMAIL}'
+      },
+      { 
+        data: 'created_at', name: 'created_at', title: '${i18n.CONTACT.CREATED_AT}',
+        render: function (data, type, row) {
+          const date = new Date(data);
+          return date.toLocaleDateString();
+        }
+      },
+      {
+        data: null, name: null, title: '${i18n.CONTACT.ACTIONS}', searchable: false, orderable: false,
+        render: function (data, type, row) {
+          let html = '';
+          html += '<button class="btn btn-sm btn-clean btn-primary btn-icon" onclick="show_contact(\\'' + row.id +'\\')"><svg height="20px" width="20px" version="1.1" id="_x32_" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve" fill="currentColor"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <style type="text/css"> .st0{fill:#currentColor;} </style> <g> <path class="st0" d="M494.56,55.774l-38.344-38.328c-23.253-23.262-60.965-23.253-84.226,0l-35.878,35.878l122.563,122.563 l35.886-35.878C517.814,116.747,517.814,79.044,494.56,55.774z"></path> <polygon class="st0" points="0,389.435 0,511.998 122.571,511.998 425.246,209.314 302.691,86.751 "></polygon> </g> </g></svg></button>';
+          
+          return html;
+        }
+      }
+    ]`, '/categorias/massive')
+            
+  script.
+    document.addEventListener('DOMContentLoaded', function() {
+     
+    });
+
+    function contacts_success(response) {
+      console.log(response);
+      $('#contacts').DataTable().ajax.reload();
+    }
+
+    function show_contact(id)
+    {
+      $.ajax({
+        url: `/dashboard/contacts/${id}`,
+        type: 'GET',
+        success: function(response) {
+          if (response.ok) {
+          console.log(response);
+            const data = response.data.contact;
+            // change action
+            $('#show_contact').find('form').attr('action', `/dashboard/contacts/${data.id}`);
+            $('#id_contact').val(data.id);
+            $('#show_name').val(data.name);
+            $('#show_email').val(data.email);
+            $('#show_message').val(data.message);
+            $('#show_contact').modal('show');
+          }
+        }
+      });
+    }
+
+    function delete_contact(id) {
+      Swal.fire({
+        title: '#{i18n.APP.ARE_YOU_SURE}',
+        text: '#{i18n.APP.DELETE_CONFIRMATION}',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: '#{i18n.APP.YES}',
+        cancelButtonText: '#{i18n.APP.CANCEL}',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.isConfirmed) {
+          $.ajax({
+            url: `/dashboard/contacts/${id}`,
+            type: 'DELETE',
+            success: function(response) {
+              Swal.fire(
+                '#{i18n.APP.DELETED}',
+                '#{i18n.APP.YOUR_RECORD_HAS_BEEN_DELETED}',
+                'success'
+              );
+              $('#contacts').DataTable().ajax.reload();
+            }
+          });
+        }
+      });
+    }
+
+append modals
+  .modal.fade(id="show_contact" tabindex='-1' aria-hidden='true' data-bs-focus='false')
+    //- .modal-dialog.modal-dialog-centered.mw-750px
+    div(class=`modal-dialog modal-${ isFullscreen ? 'fullscreen': size}`)
+      .modal-content
+        .modal-header.d-flex.justify-content-between.align-items-center
+          h2.fw-bold #{title}
+          .card-toolbar
+            .btn.btn-icon.btn-sm.btn-active-icon-primary(id=`cancel_icon`)
+              span.svg-icon.svg-icon-1
+                svg(width='24' height='24' viewbox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg')
+                  rect(opacity='0.5' x='6' y='17.3137' width='16' height='2' rx='1' transform='rotate(-45 6 17.3137)' fill='currentColor')
+                  rect(x='7.41422' y='6' width='16' height='2' rx='1' transform='rotate(45 7.41422 6)' fill='currentColor')
+        .modal-body.scroll-y.mx-lg-5.my-7
+          form.form(id=`${id}_form` action=action method=method enctype='multipart/form-data')
+            .d-flex.flex-column.scroll-y.me-n7.pe-7(id=`${id}_scroll` data-kt-scroll='true' data-kt-scroll-activate='{default: false, lg: true}' data-kt-scroll-max-height='auto' data-kt-scroll-dependencies='#kt_modal_add_role_header' data-kt-scroll-wrappers='#kt_modal_add_role_scroll' data-kt-scroll-offset='300px')
+              div 
+                div.mb-3
+                  +input-label({id: 'show_name', label: i18n.CONTACT.NAME, type: "text", placeholder: i18n.CONTACT.NAME, isRequired: true})(readonly)
+                div.mb-3
+                  +input-label({id: 'show_email', label: i18n.CONTACT.EMAIL, type: "email", placeholder: i18n.CONTACT.EMAIL, isRequired: true})(readonly)
+                div.mb-3
+                  +textarea-label({id: 'show_message', label: i18n.CONTACT.MESSAGE, type: "message", placeholder: i18n.CONTACT.MESSAGE, isRequired: true})(readonly)
+                   
+  script.
+    document.addEventListener('click', function (e) {
+      cancel_icon.addEventListener('click', function () {
+        close_modal('#show_contact');
+      });
+    });
+    function close_modal (instance) {
+      const modal = bootstrap.Modal.getInstance(instance);
+        Swal.fire({
+          text: "#{i18n.APP.WOULD_LIKE_TO_CANCEL}",
+          icon: "warning",
+          showCancelButton: true,
+          buttonsStyling: false,
+          confirmButtonText: "#{i18n.APP.YES_CANCEL_IT}",
+          cancelButtonText: "#{i18n.APP.NO_RETURN}",
+          customClass: {
+            confirmButton: "btn btn-primary",
+            cancelButton: "btn btn-active-light"
+          }
+        }).then(function (result) {
+          if (result.value) {
+            modal.hide();
+          } else if (result.dismiss === 'cancel') {
+            Swal.fire({
+              text: "#{i18n.APP.YOUR_FORM_HAS_NOT_BEEN_CANCELLED}",
+              icon: "error",
+              buttonsStyling: false,
+              confirmButtonText: "#{i18n.APP.GOT_IT}",
+              customClass: {
+                confirmButton: "btn btn-primary"
+              }
+            });
+          }
+        })
+    }           

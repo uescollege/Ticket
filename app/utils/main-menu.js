@@ -4,6 +4,12 @@ module.exports = [
     route: '/panel',
     icon: 'home',
   },
+  {
+    title: "Eventos",
+    route: '/events',
+    icon: 'calendar',
+  },
+  
   // {
   //   heading: 'Blog',
   //   route: '',

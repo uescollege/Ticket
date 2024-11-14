@@ -1,6 +1,6 @@
-const { Router } = require("express");
+const { Router } = require('express');
 const router = Router();
-const { DashboardController } = require("../controllers/dashboard.controller");
+const { DashboardController } = require('../controllers/dashboard.controller');
 
 router.get('/', DashboardController.Panel);
 

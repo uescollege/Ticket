@@ -1,0 +1,18 @@
+{
+  "CREATE_USER": "Crear usuario",
+  "EDIT_USER": "Editar",
+  "NAME": "Nombre",
+  "EMAIL": "Correo electrónico",
+  "CREATED_AT": "Creado en",
+  "UPDATED_AT": "Actualizado en",
+  "ACTIONS": "Acciones",
+  "AVATAR": "Avatar",
+  "CREATE": "Crear",
+  "EDIT": "Editar",
+  "DELETE": "Eliminar",
+  "UPDATE": "Actualizar",
+  "SAVE": "Guardar",
+  "LIST_OF_USERS": "Lista de usuarios",
+  "CHANGE_PASSWORD": "Cambiar contraseña",
+  "USER_INFORMATION": "Información del usuario"
+}

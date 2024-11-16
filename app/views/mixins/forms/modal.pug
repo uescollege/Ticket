@@ -1,0 +1,363 @@
+mixin base-modal(id, action = "#", method = "POST", size='lg', isFullscreen=false, successEvent = 'success', title = "", fields = {})
+  .modal.fade(id=id tabindex='-1' aria-hidden='true' data-bs-focus='false')
+    //- .modal-dialog.modal-dialog-centered.mw-750px
+    div(class=`modal-dialog modal-${ isFullscreen ? 'fullscreen': size}`)
+      .modal-content
+        .modal-header.d-flex.justify-content-between.align-items-center
+          h2.fw-bold #{title}
+          .card-toolbar
+            .btn.btn-icon.btn-sm.btn-active-icon-primary(id=`cancel_icon_${id}`)
+              span.svg-icon.svg-icon-1
+                svg(width='24' height='24' viewbox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg')
+                  rect(opacity='0.5' x='6' y='17.3137' width='16' height='2' rx='1' transform='rotate(-45 6 17.3137)' fill='currentColor')
+                  rect(x='7.41422' y='6' width='16' height='2' rx='1' transform='rotate(45 7.41422 6)' fill='currentColor')
+        .modal-body.scroll-y.mx-lg-5.my-7
+          form.form(id=`${id}_form` action=action method=method enctype='multipart/form-data')
+            .d-flex.flex-column.scroll-y.me-n7.pe-7(id=`${id}_scroll` data-kt-scroll='true' data-kt-scroll-activate='{default: false, lg: true}' data-kt-scroll-max-height='auto' data-kt-scroll-dependencies='#kt_modal_add_role_header' data-kt-scroll-wrappers='#kt_modal_add_role_scroll' data-kt-scroll-offset='300px')
+              div 
+                if block
+                  block
+            .text-center(style="margin-top: 20px;")
+              button.btn.btn-danger.me-3(id=`cancel_button_${id}` type="button") #{i18n.APP.CANCEL}
+              button.btn.btn-light.me-3(type='reset') #{i18n.APP.RESET}
+              button.btn.btn-primary(type='submit')
+                span.indicator-label #{i18n.APP.SAVE}
+
+  script.
+    function close_modal_!{id} (instance) {
+      const modal = bootstrap.Modal.getInstance(instance);
+        Swal.fire({
+          text: "#{i18n.APP.WOULD_LIKE_TO_CANCEL}",
+          icon: "warning",
+          showCancelButton: true,
+          buttonsStyling: false,
+          confirmButtonText: "#{i18n.APP.YES_CANCEL_IT}",
+          cancelButtonText: "#{i18n.APP.NO_RETURN}",
+          customClass: {
+            confirmButton: "btn btn-primary",
+            cancelButton: "btn btn-active-light"
+          }
+        }).then(function (result) {
+          if (result.value) {
+            reset_form_!{id}();
+            modal.hide();
+          } else if (result.dismiss === 'cancel') {
+            Swal.fire({
+              text: "#{i18n.APP.YOUR_FORM_HAS_NOT_BEEN_CANCELLED}",
+              icon: "error",
+              buttonsStyling: false,
+              confirmButtonText: "#{i18n.APP.GOT_IT}",
+              customClass: {
+                confirmButton: "btn btn-primary"
+              }
+            });
+          }
+        })
+    }
+
+    function just_close_modal_!{id} (instance) {
+      const modal = bootstrap.Modal.getInstance(instance);
+      modal.hide();
+    }
+
+    function reset_form_!{id} () {
+      const form_c = document.querySelector('##{id}_form');
+      form_c.reset();
+
+      //- find cropper
+      const cropper_element = form_c.querySelector('[data-control="cropper"]');
+      if (cropper_element) {
+        const cropper_name = cropper_element.getAttribute('cropper-name');
+        if (window[`${cropper_name}_cropper`].url) {
+          window[`${cropper_name}_cropper`].destroy();
+          //- clear crop
+          $(`#${cropper_name}_cropper`).html('<img id="avatar_preview" class="w-100" src="/public/images/image-default.jpg" alt="Avatar preview">');
+        }
+      }
+
+      //- find ckeditor
+      const ckeditor_element = form_c.querySelector('[data-control="ckeditor"]');
+      if (ckeditor_element) {
+        const ckeditor_name = ckeditor_element.getAttribute('ckeditor-name');
+        if (window[`${ckeditor_name}_ckeditor`]) {
+          if (window[`${ckeditor_name}_ckeditor`]) {
+            window[`${ckeditor_name}_ckeditor`].setData('');
+          }
+        }
+      }
+
+      //- find select2
+      const select2_elements = form_c.querySelectorAll('[data-control="select2"]');
+      console.log(select2_elements.length);
+      if (select2_elements.length > 0) {
+        for (let i = 0; i < select2_elements.length; i++) {
+          console.log(`#${select2_elements[i].id}`);
+          $(`#${select2_elements[i].id}`).val('').trigger('change');
+        }
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const modal_!{id} = document.querySelector('##{id}');
+      const submit_button_!{id} = document.querySelector('##{id} button[type="submit"]');
+      const cancel_button_!{id} = document.querySelector('#cancel_button_#{id}');
+      const cancel_icon_!{id} = document.querySelector('#cancel_icon_#{id}');
+      const reset_button_!{id} = document.querySelector('##{id} button[type="reset"]');
+
+      reset_button_!{id}.addEventListener('click', function (e) {
+        e.preventDefault();
+        reset_form_!{id}();
+      });
+      const fields = !{JSON.stringify(fields || {})};
+      if (fields.password) {
+        fields.password_confirmation = {
+          validators: {
+            identical: {
+              compare: function () {
+                return document.querySelector('##{id}_form input[name="password"]').value;
+              },
+              message: '#{i18n.APP.PASSWORD_CONFIRMATION_DOES_NOT_MATCH}'
+            }
+          }
+        };
+      }
+      const validator = FormValidation.formValidation(
+        document.querySelector('##{id}_form'),
+        {
+          fields: fields,
+          plugins: {
+            trigger: new FormValidation.plugins.Trigger(),
+            bootstrap: new FormValidation.plugins.Bootstrap5({
+                rowSelector: '.fv-row',
+                eleInvalidClass: '',  // comment to enable invalid state icons
+                eleValidClass: '' // comment to enable valid state icons
+            })
+          }
+        });
+      submit_button_!{id}.addEventListener('click', function (e) {
+        e.preventDefault();
+        
+        const form = document.querySelector('##{id}_form');
+        //- const formData = new FormData(form);
+        const url = form.getAttribute('action');
+        const method = form.getAttribute('method');
+
+        const exists_file =$(form).find("input[type=\"file\"]:not(.ck-hidden)").length > 0;
+
+        const form_data = new FormData(form);
+
+        //- exists data-control="ckeditor"
+        const ckeditor = $(form).find('[data-control="ckeditor"]');
+        if (ckeditor.length > 0) {
+          for (let i = 0; i < ckeditor.length; i++) {
+            const element = ckeditor[i];
+            const name = element.getAttribute('ckeditor-name');
+            if (window[`${name}_ckeditor`]) {
+              const value = window[`${name}_ckeditor`].getData();
+              form_data.set(name, value);
+            }
+          }
+        }
+
+        if (exists_file) {
+          //- exist data-control="cropper"
+          const cropper = $(form).find('[data-control="cropper"]');
+          if (cropper.length > 0) {
+            for (let i = 0; i < cropper.length; i++) {
+              const element = cropper[i];
+              const name = element.getAttribute('cropper-name');
+              //- const target = element.getAttribute('cropper-target');
+
+              if (window[`${name}_cropper`] && window[`${name}_cropper`].url) {
+                //- cropper name is a file's name input with original image, set new cropper image to this input
+                // remove
+                form_data.delete(name);
+                const dataURL = window[`${name}_cropper`].getCroppedCanvas().toDataURL();
+                const blob = dataURItoBlob(dataURL);
+                const file = new File([blob], "cropped.jpg", { type: blob.type });
+                form_data.set(name, file);
+              }
+            }
+          }
+        }
+
+        const ajax_data = {
+          url: url,
+          method: method,
+          data:  exists_file ? form_data : new URLSearchParams(form_data).toString(),
+        }
+
+        if (exists_file) {
+          ajax_data.processData = false;
+          ajax_data.contentType = false;
+        }
+
+        validator.validate().then(function (status) {
+          if (status == 'Valid') {
+              //- ajax
+            Swal.showLoading();
+            $.ajax({
+              ...ajax_data,
+              
+              success: function (data, status) {
+                Swal.close();
+                if (status == 'success') {
+
+                  if (data.ok) {
+                    Swal.fire({
+                      text: data.msg,
+                      icon: "success",
+                      buttonsStyling: false,
+                      confirmButtonText: "#{i18n.APP.GOT_IT}",
+                      customClass: {
+                        confirmButton: "btn btn-primary"
+                      }
+                    })
+                    try {
+                      const event = new CustomEvent('#{successEvent}', { detail: data });
+                      if (document.dispatchEvent(event)) {
+                        eval('#{successEvent}')(data);
+                      }
+                    } catch (error) {
+                      console.log(error);
+                    }
+
+                    // close modal 
+                    just_close_modal_!{id}(modal_!{id});
+                    reset_form_!{id}();
+                  } else {
+                    Swal.fire({
+                      text: '#{i18n.APP.SOMETHING_WENT_WRONG}',
+                      icon: "error",
+                      buttonsStyling: false,
+                      confirmButtonText: "#{i18n.APP.GOT_IT}",
+                      customClass: {
+                        confirmButton: "btn btn-primary"
+                      }
+                    });
+                  }
+                } else {
+                  Swal.fire({
+                    text: data.msg,
+                    icon: "error",
+                    buttonsStyling: false,
+                    confirmButtonText: "#{i18n.APP.GOT_IT}",
+                    customClass: {
+                      confirmButton: "btn btn-primary"
+                    }
+                  });
+                }
+              },
+              error: function (response) {
+                Swal.close();
+                if (response.responseJSON.errors) {
+                  const errors = response.responseJSON.errors; // [{ location: 'name', msg: 'message' }]
+                  const alert_container = document.createElement('div');
+                  alert_container.classList.add('alert', 'alert-custom', 'alert-danger', 'fade', 'show', 'mb-5');
+                  alert_container.setAttribute('role', 'alert');
+                  for (let i = 0; i < errors.length; i++) {
+                    const error = errors[i];
+                    const alert = document.createElement('div');
+                    alert.classList.add('alert-text');
+                    alert.innerHTML = error.msg;
+                    alert_container.appendChild(alert);
+                  }
+                  Swal.fire({
+                    html: alert_container,
+                    icon: "error",
+                    buttonsStyling: false,
+                    confirmButtonText: "#{i18n.APP.GOT_IT}",
+                    customClass: {
+                      confirmButton: "btn btn-primary"
+                    }
+                  });
+                } else {
+                  switch (response.status) {
+                    case 403:
+                      Swal.fire({
+                        text: response.responseJSON.msg,
+                        icon: "error",
+                        buttonsStyling: false,
+                        confirmButtonText: "#{i18n.APP.GOT_IT}",
+                        customClass: {
+                          confirmButton: "btn btn-primary"
+                        }
+                      });
+                      break;
+
+                    case 404:
+                      Swal.fire({
+                        text: response.responseJSON.msg,
+                        icon: "error",
+                        buttonsStyling: false,
+                        confirmButtonText: "#{i18n.APP.GOT_IT}",
+                        customClass: {
+                          confirmButton: "btn btn-primary"
+                        }
+                      });
+                      break;
+                    case 409:
+                      Swal.fire({
+                        text: response.responseJSON.msg,
+                        icon: "error",
+                        buttonsStyling: false,
+                        confirmButtonText: "#{i18n.APP.GOT_IT}",
+                        customClass: {
+                          confirmButton: "btn btn-primary"
+                        }
+                      });
+                      break;
+                    case 400:
+                      Swal.fire({
+                        text: response.responseJSON.msg,
+                        icon: "error",
+                        buttonsStyling: false,
+                        confirmButtonText: "#{i18n.APP.GOT_IT}",
+                        customClass: {
+                          confirmButton: "btn btn-primary"
+                        }
+                      });
+                      break;
+                    default:
+                      Swal.fire({
+                        text: "#{i18n.APP.SOMETHING_WENT_WRONG}",
+                        icon: "error",
+                        buttonsStyling: false,
+                        confirmButtonText: "#{i18n.APP.GOT_IT}",
+                        customClass: {
+                          confirmButton: "btn btn-primary"
+                        }
+                      });
+                  }
+                }
+              }
+            });         
+          } else {
+            Swal.fire({
+              text: "#{i18n.APP.SOMETHING_WENT_WRONG}",
+              icon: "error",
+              buttonsStyling: false,
+              confirmButtonText: "#{i18n.APP.GOT_IT}",
+              customClass: {
+                confirmButton: "btn btn-primary"
+              }
+            });   
+          }
+        });
+
+
+        
+      });
+
+      cancel_button_!{id}.addEventListener('click', function (e) {
+        e.preventDefault();
+        //- close modal
+        close_modal_!{id}(modal_!{id});
+      });
+
+      cancel_icon_!{id}.addEventListener('click', function (e) {
+        e.preventDefault();
+        //- close modal
+        close_modal_!{id}(modal_!{id});
+      });
+    });

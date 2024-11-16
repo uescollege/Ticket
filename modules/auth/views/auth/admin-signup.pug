@@ -1,0 +1,75 @@
+extends /app/views/layouts/auth
+
+append content
+  .vh-100.container.mx-auto
+    .row
+      .col-12
+        .d-flex.min-vh-100.justify-content-center.align-items-center
+          .card(style="min-width:320px;")
+            .card-body
+              form#admin_signup(action="/admin/signup" method="POST")
+                //- name
+                .form-group.mt-3
+                  label.form-label(for="name") Name
+                  input#name.form-control(type="text" name="name" placeholder="Name" required)
+                //- email
+                .form-group.mt-3
+                  label.form-label(for="email") Email
+                  input#email.form-control(type="email" name="email" placeholder="Email" required)
+                //- password
+                .form-group.mt-3
+                  label.form-label(for="password") Password
+                  input#password.form-control(type="password" name="password" placeholder="Password" required)
+                //- password confirmation
+                .form-group.mt-3
+                  label.form-label(for="password_confirmation") Password confirmation
+                  input#password_confirmation.form-control(type="password" name="password_confirmation" placeholder="Password Confirmation" required)
+                //- submit
+                .form-group.mt-3
+                  button#btn_admin_signup.btn.btn-primary(type="submit") Create
+              
+     
+  script.
+    document.addEventListener('DOMContentLoaded', function() {
+      btn_admin_signup.addEventListener('click', function(event) {
+        event.preventDefault();
+        fetch('/admin/signup', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            //- 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+          },
+          body: JSON.stringify({
+            name: document.querySelector('#name').value,
+            email: document.querySelector('#email').value,
+            password: document.querySelector('#password').value,
+            password_confirmation: document.querySelector('#password_confirmation').value
+          })
+        }).then(response => response.json())
+          .then(administrators_success)
+          .catch(error => {
+            console.error('There was an error!', error);
+          });
+      });
+    });
+
+    function administrators_success(response) {
+      if(response.ok) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Administrator created successfully',
+          showConfirmButton: false,
+          timer: 1500
+        });
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'There was an error',
+          description: response.msg,
+          showConfirmButton: false,
+          timer: 1500
+        });
+      }
+      //- clear form
+      admin_signup.reset();
+    }

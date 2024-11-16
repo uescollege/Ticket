@@ -1,8 +1,8 @@
 const jwt = require("jsonwebtoken");
 const config = require('../config/index');
 const { matchedData } = require("express-validator");
-const {errorHandler } = require("#app/helpers/error-handler.helper");
-const { successHandler } = require("#app/helpers/success-handler.helper");
+const errorHandler  = require("#app/helpers/error-handler.helper");
+const successHandler  = require("#app/helpers/success-handler.helper");
 class Controller {
   static successHandler = successHandler;
   static errorHandler = errorHandler

@@ -1,0 +1,80 @@
+extends /app/views/layouts/web
+
+
+append content
+  style.
+    .map-container {
+    position: relative;
+    overflow: hidden;
+    padding-bottom: 56.25%;
+    height: 0;
+    max-width: 100%;
+    }
+    .map-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    }
+
+  main(class="flex-grow-1")
+    .container.py-5
+      h2.text-center.mb-4 Cont&aacute;ctanos
+      .row
+        .col-md-6
+          .mb-3
+            label.form-label(for='nombre') #{i18n.CONTACT.NAME}
+            input#nombre.form-control(type='text' name='nombre' required='')
+          .mb-3
+            label.form-label(for='email') #{i18n.CONTACT.EMAIL}
+            input#email.form-control(type='email' name='email' required='')
+          .mb-3
+            label.form-label(for='mensaje') #{i18n.CONTACT.MESSAGE}
+            textarea#mensaje.form-control(name='mensaje' rows='4' required='')
+          button#btn_send_contact_message.btn.btn-primary(type='submit') Enviar
+        .col-md-6
+          h3 Ubicaci&oacute;n
+          .map-container.mt-4
+            iframe.rounded.shadow-sm(src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3876.0406661036086!2d-89.20581002533467!3d13.715986886672184!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8f6330843530ff0b%3A0xd2e3ab336929e47f!2sUniversidad%20de%20El%20Salvador!5e0!3m2!1ses-419!2ssv!4v1731101155305!5m2!1ses-419!2ssv' width='100%' height='400px' style='border:0;' allowfullscreen='' loading='lazy')
+  script.
+    document.addEventListener("DOMContentLoaded", function () {
+      btn_send_contact_message.addEventListener('click', async function (e) {
+        e.preventDefault();
+        await send_contact_message();
+      });
+    });
+
+    async function send_contact_message() {
+      // Send contact message
+      Swal.showLoading();
+      const response = await fetch('/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: nombre.value,
+          email: email.value,
+          message: mensaje.value,
+        }),
+      });
+
+      if (response.ok) {
+        Swal.fire({
+          title: 'Mensaje enviado',
+          text: 'Tu mensaje ha sido enviado correctamente. Nos pondremos en contacto contigo lo antes posible.',
+          icon: 'success',
+        });
+        // Clear form
+        nombre.value = '';
+        email.value = '';
+        mensaje.value = '';
+      } else {
+        Swal.fire({
+          title: 'Error',
+          text: 'Ha ocurrido un error al enviar tu mensaje. Por favor, intenta de nuevo.',
+          icon: 'error',
+        });
+      }
+    }

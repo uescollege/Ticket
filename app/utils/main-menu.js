@@ -5,6 +5,10 @@ module.exports = [
     icon: 'home',
   },
   {
+    title: "Eventos",
+    route: '/events',
+    icon: 'calendar',
+  },
     title: "Administrators",
     route: '/dashboard/administrators',
     icon: 'admin',

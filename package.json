@@ -71,11 +71,15 @@
     "fs-extra": "10.0.0",
     "nodemon": "2.0.20",
     "pretty": "2.0.0",
+    "semistandard": "^17.0.0",
     "yargs": "16.2.0",
     "yarn-install": "1.0.0"
   },
   "_moduleAliases": {
     "#layers": "layers/",
     "#app": "app/"
+  },
+  "eslintConfig": {
+    "extends": "semistandard"
   }
 }

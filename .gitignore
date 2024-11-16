@@ -1,6 +1,7 @@
 gulp
 gulp-dest
 node_modules
+mysql
 .env
 .DS_Store
 # Logs

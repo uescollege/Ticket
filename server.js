@@ -134,5 +134,5 @@ require('#app/helpers/cronjobs.helper');
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
-  console.log(`Server is on port ${port}`);
+  console.log(`Server is running on port ${port} http://localhost:${port}`);
 });
